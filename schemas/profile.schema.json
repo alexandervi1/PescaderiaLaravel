@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Profile",
+  "type": "object",
+  "properties": {
+    "name": {"type": "string"},
+    "type": {"type": "string", "enum": ["GamerAggressive", "DeveloperOptimized", "UniversalDesktopLaptop"]},
+    "settings": {
+      "type": "object",
+      "properties": {
+        "powerPlan": {"type": "string"},
+        "cpuParking": {"type": "boolean"},
+        "backgroundApps": {"type": "boolean"},
+        "startupApps": {"type": "object", "properties": {"disable": {"type": "boolean"}}, "required": ["disable"]},
+        "disk": {"type": "object", "properties": {"trim": {"type": "boolean"}, "prefetch": {"type": "boolean"}, "indexing": {"type": "boolean"}}, "required": ["trim", "prefetch", "indexing"]},
+        "network": {"type": "object", "properties": {"QoS": {"type": "boolean"}, "limitBackgroundTraffic": {"type": "boolean"}}, "required": ["QoS", "limitBackgroundTraffic"]},
+        "telemetry": {"type": "object", "properties": {"enabled": {"type": "boolean"}}, "required": ["enabled"]},
+        "updates": {"type": "object", "properties": {"schedule": {"type": "string", "enum": ["manual", "deferral"]}}, "required": ["schedule"]}
+      },
+      "required": ["powerPlan", "cpuParking", "backgroundApps", "startupApps", "disk", "network", "telemetry", "updates"]
+    },
+    "batteryPolicy": {
+      "type": "object",
+      "properties": {
+        "maxCpu": {"type": "number"},
+        "throttleOnBattery": {"type": "boolean"}
+      },
+      "required": ["maxCpu", "throttleOnBattery"]
+    },
+    "applyOrder": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "required": ["name", "type", "settings", "batteryPolicy", "applyOrder", "createdAt", "updatedAt"]
+}

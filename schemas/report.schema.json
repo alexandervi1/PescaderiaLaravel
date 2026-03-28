@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Report",
+  "type": "object",
+  "properties": {
+    "profileName": {"type": "string"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {"type": "string"},
+          "success": {"type": "boolean"},
+          "details": {"type": "string"}
+        },
+        "required": ["action", "success"]
+      }
+    },
+    "summary": {"type": "string"},
+    "logsLink": {"type": "string"}
+  },
+  "required": ["profileName", "timestamp", "results", "summary", "logsLink"]
+}

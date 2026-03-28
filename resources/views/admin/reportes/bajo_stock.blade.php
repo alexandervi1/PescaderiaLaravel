@@ -1,0 +1,81 @@
+@extends('layouts.admin')
+
+@section('title', 'Alerta de Bajo Stock')
+
+@section('actions')
+<button onclick="window.print()" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+    <i class="fas fa-print me-2"></i> Imprimir Reporte
+</button>
+@endsection
+
+@section('content')
+
+@if($productos->isEmpty())
+    <div class="text-center py-5">
+        <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+        <h3 class="fw-bold text-dark">Inventario Saludable</h3>
+        <p class="text-muted">Actualmente ningún producto se encuentra por debajo del umbral mínimo (50 unidades de venta).</p>
+    </div>
+@else
+    <div class="alert alert-danger px-4 py-3 d-flex align-items-center mb-4 rounded-4 shadow-sm">
+        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+        <div>
+            <h5 class="alert-heading fw-bold mb-1">¡Atención requerida!</h5>
+            <p class="mb-0">Los siguientes <strong>{{ $productos->count() }}</strong> productos están por agotarse (menos de 50 u. disponibles para la venta).</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm contour-xl overflow-hidden rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="ps-4">Producto</th>
+                            <th scope="col">Stock Disponible (Venta)</th>
+                            <th scope="col">Stock Físico (Bodega)</th>
+                            <th scope="col" class="text-center">Estado</th>
+                            <th scope="col" class="text-center pe-4">Acción Sugerida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($productos as $producto)
+                            @php 
+                                $stockVenta = floor($producto->stockVenta); 
+                                $critico = $stockVenta <= 10;
+                            @endphp
+                            <tr class="{{ $critico ? 'table-danger' : '' }}">
+                                <td class="ps-4 py-3 fw-bold">
+                                    {{ $producto->nombre }}
+                                </td>
+                                <td>
+                                    <span class="fs-5 fw-bold {{ $critico ? 'text-danger' : 'text-warning' }}">{{ $stockVenta }}</span> 
+                                    <small>{{ $producto->unidadVenta->abreviatura ?? 'u' }}</small>
+                                </td>
+                                <td class="text-muted small">
+                                    {{ number_format($producto->stock, 4) }} {{ $producto->unidadCompra->abreviatura ?? '?' }}
+                                </td>
+                                <td class="text-center">
+                                    @if($stockVenta == 0)
+                                        <span class="badge bg-dark rounded-pill">Agotado</span>
+                                    @elseif($critico)
+                                        <span class="badge bg-danger rounded-pill">Crítico</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark rounded-pill">Bajo</span>
+                                    @endif
+                                </td>
+                                <td class="text-center pe-4">
+                                    <a href="{{ route('admin.productos.edit', $producto->producto_id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-boxes me-1"></i> Reabastecer
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@endif
+
+@endsection

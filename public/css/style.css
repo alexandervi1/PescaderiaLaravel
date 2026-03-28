@@ -1,0 +1,230 @@
+/* 
+   ==========================================================================
+   Modernized Pescadería Don Walter Theme
+   ========================================================================== 
+*/
+
+:root {
+    --primary-color: #1A519D;
+    --primary-light: #7CCCED;
+    --primary-dark: #002E5D;
+    --accent-color: #FF5722;
+    --bg-light: #F8F9FA;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background-color: var(--bg-light);
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+/* ── Navbar ── */
+.navbar {
+    background-color: var(--primary-color) !important;
+    padding: 8px 0;
+    transition: var(--transition-smooth);
+}
+
+.navbar-brand img {
+    background-color: white;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-smooth);
+}
+
+.navbar .search-bar input {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    color: rgba(255,255,255,0.9) !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary-light) !important;
+}
+
+/* ── Modales (Base Logic Restored) ── */
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px !important;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: var(--shadow-lg);
+    max-width: 90vw;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+    z-index: 10;
+}
+
+/* ── Formularios ── */
+.form-control {
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+
+/* ── Botones Premium ── */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 81, 157, 0.3);
+}
+
+/* Botón de Categoría Activa */
+.cat {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* ── Productos ── */
+.product-card {
+    transition: var(--transition-smooth) !important;
+    border-radius: 15px !important;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md) !important;
+}
+
+.product-card img {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+/* ── Responsive Viewports ── */
+
+/* Laptop Standard (1366x768) */
+@media (max-width: 1366px) {
+    .navbar-brand img { height: 50px !important; }
+    .modal-content {
+        padding: 15px !important;
+        width: 350px !important;
+    }
+    .modal-content .logo { width: 120px !important; }
+    .modal-content h3 { font-size: 1.25rem !important; }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 576px) {
+    .modal-fullscreen-sm-down .modal-content {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        max-width: 100vw !important;
+    }
+}
+
+/* Scrollable helper for short viewports */
+.modal-dialog-scrollable .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Hero Section */
+.bg-gradient-hero {
+    background: linear-gradient(90deg, #212529 0%, transparent 100%);
+}
+
+/* ── Deep Symmetry and DataTables Responsive Fixes ── */
+@media (max-width: 768px) {
+    /* DataTables Pagination & Search Centering */
+    div.dataTables_wrapper div.dataTables_filter input {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5px;
+        display: block;
+    }
+    div.dataTables_wrapper div.dataTables_filter {
+        text-align: center !important;
+        margin-top: 15px;
+    }
+    div.dataTables_wrapper div.dataTables_length {
+        text-align: center !important;
+        margin-bottom: 10px;
+    }
+    div.dataTables_wrapper div.dataTables_info {
+        text-align: center !important;
+        padding-top: 15px;
+    }
+    div.dataTables_wrapper div.dataTables_paginate {
+        text-align: center !important;
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Form Inputs Symmetry */
+    .form-control, .form-select {
+        text-align: center;
+    }
+    
+    /* Layout Adjustments */
+    .card-body {
+        padding: 1.25rem 1rem !important;
+    }
+
+    main.col-md-9 {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+}
+
+/* ── Action Buttons Symmetrical Sizes ── */
+.btn-action {
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+}

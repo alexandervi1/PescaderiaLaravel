@@ -1,0 +1,128 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{parskip}
+
+\geometry{a4paper, margin=1in}
+
+\title{\textbf{Especificación de Requisitos de Software (SRS)}\\ \Large Comercial de Mariscos Don Walter (PescaderiaLaravel)}
+\author{Documento basado en el estándar IEEE Std 830-1998}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
+\subsection{Propósito}
+El propósito de este documento es definir la Especificación de Requisitos de Software (SRS) para el sistema de e-commerce y gestión de la ``Comercial de Mariscos Don Walter'', desarrollado bajo el framework Laravel 9. Este documento detalla tanto las funcionalidades del frontend (tienda orientada al cliente) como del backend (panel CRM de administración).
+
+\subsection{Ámbito del Sistema}
+El software es una plataforma integral de comercio electrónico para pescado y mariscos de alta calidad. El sistema permite a los clientes explorar productos mediante una interfaz inmersiva, gestionar un carrito de compras y realizar pedidos. Simultáneamente, ofrece a la administración un Dashboard de gestión de inventarios, despachos, métricas financieras en tiempo real y configuraciones estrictas de seguridad (Hardening y rotación de contraseñas).
+
+\subsection{Definiciones, Acrónimos y Abreviaturas}
+\begin{itemize}
+    \item \textbf{SRS}: Software Requirements Specification.
+    \item \textbf{PDP}: Product Details Page (Página de Detalles de Producto).
+    \item \textbf{CRM}: Customer Relationship Management.
+    \item \textbf{ORM}: Object-Relational Mapping (Eloquent en Laravel).
+    \item \textbf{RUC}: Registro Único de Contribuyentes.
+\end{itemize}
+
+\subsection{Referencias}
+\begin{itemize}
+    \item IEEE Std 830-1998, IEEE Recommended Practice for Software Requirements Specifications.
+    \item Documentación oficial de Laravel 9.0 (\url{https://laravel.com/docs/9.x}).
+\end{itemize}
+
+\subsection{Visión General del Documento}
+El presente documento está estructurado de acuerdo con el estándar IEEE 830-1998. La sección 2 ofrece una perspectiva general del sistema. La sección 3 describe exhaustivamente los requisitos funcionales, no funcionales y las interfaces externas.
+
+\section{Descripción General}
+
+\subsection{Perspectiva del Producto}
+El sistema es una aplicación web autónoma que reemplaza los métodos tradicionales de venta física e inventario manual. Está diseñado sobre una arquitectura Modelo-Vista-Controlador (MVC) conectada a una base de datos relacional (MySQL).
+
+\subsection{Funciones del Producto}
+Las funciones principales del sistema incluyen:
+\begin{itemize}
+    \item \textbf{Gestión de Catálogo:} Operaciones CRUD sin refresco de página (AJAX) para Categorías y Productos.
+    \item \textbf{Escaparate Digital (E-commerce):} Galería de productos, Página de Detalles Inmersiva (PDP) al estilo Amazon y carrito de compras dinámico.
+    \item \textbf{Gestión de Órdenes:} Creación nativa de pedidos por parte de clientes y módulo de despachos y facturación (SRI) en el panel administrativo.
+    \item \textbf{Panel Analítico:} Generación de gráficos Chart.js con balances financieros y existencias.
+    \item \textbf{Módulo de Seguridad:} Configuración del sistema y notificaciones proactivas forzando la rotación de credenciales maestras cada 90 días.
+\end{itemize}
+
+\subsection{Características de los Usuarios}
+Existen 2 perfiles principales interactuando con la aplicación:
+\begin{enumerate}
+    \item \textbf{Clientes:} Consumidores finales de servicios web. Requieren una interfaz sumamente intuitiva y atractiva visualmente sin requerir conocimientos técnicos.
+    \item \textbf{Administradores:} Gestores logísticos y contables con requerimientos de alta disponibilidad sobre tableros de inventario y manipulación de datos sensibles.
+\end{enumerate}
+
+\subsection{Entorno Operativo}
+\begin{itemize}
+    \item Servidor web: Mínimo Apache 2.4 o Nginx.
+    \item Lenguaje base: PHP 8.0+.
+    \item Base de Datos: MySQL 5.7+ o MariaDB.
+    \item Frameworks UI: Bootstrap 5.3, DataTables.
+\end{itemize}
+
+\subsection{Restricciones de Diseño e Implementación}
+\begin{itemize}
+    \item La aplicación debe hacer uso exhaustivo de PDO Parameter Binding en Eloquent para mitigar inyecciones SQL.
+    \item Las vistas deben adherirse estricamente a la metodología \textit{Mobile-first} mediante el sistema grid de Bootstrap.
+    \item El borrado de categorías no debe eliminar en cascada los productos en la base de datos (Restricción Set Null).
+\end{itemize}
+
+\section{Requisitos Específicos}
+
+\subsection{Requisitos de Interfaz Externa}
+\subsubsection{Interfaces de Usuario}
+El sistema presentará una separación de interfaces estricta entre Administradores y Clientes. La interfaz Frontal debe incluir un \textit{Buy Box} y compatibilidad con pantallas táctiles, mientras que el \textit{Backend Dashboard} alojará paneles colapsables laterales y componentes DataTables.
+
+\subsubsection{Interfaces de Hardware y Software}
+La plataforma deberá ejecutarse eficazmente sobre cualquier navegador web moderno (Chrome, Firefox, Safari, Edge). Carece de interfaces de integración al hardware más allá del soporte de impresión para los reportes o comprobantes en formato A4.
+
+\subsection{Requisitos Funcionales}
+
+\subsubsection{RF-01: Autenticación de Usuarios}
+El sistema debe proveer vistas nativas e independientes para el Registro de usuarios y el Inicio de sesión. La verificación del usuario será contra un correo y contraseña cifrada usando Bcrypt. Las validaciones regresarán un HTTP 422 JSON explícito en casos de fallos en requisitos formales.
+
+\subsubsection{RF-02: Exploración de Productos E-commerce}
+Los clientes podrán explorar los productos y ser redirigidos a una PDP (Product Details Page) de 3 columnas divididas visualmente en: Galería (Col 1), Ficha técnica (Col 2) y Caja de Compra (Col 3) calculada por unidad de medida (\textit{lbs, un}).
+
+\subsubsection{RF-03: Procesamiento del Carrito de Compras}
+El cliente debe poder incrementar las unidades asíncronamente o dentro del entorno sincrónico validando en todo momento que su solicitud no supere la existencia (\textit{stockVenta}) en la base de datos local.
+
+\subsubsection{RF-04: Panel Estadístico de Despachos}
+El aplicativo facilitará a los administradores gráficos estadísticos renderizados con Chart.js basándose en las órdenes consolidadas semanal y mensualmente.
+
+\subsubsection{RF-05: Modulación de Seguridad Activa}
+La plataforma auditará recurrentemente a los administradores. Si las credenciales concuerdan con los \textit{default factory hashes} (admin123) o si superan los 90 días en latencia sin un Hash update, se inyectarán Modales o Alertas interrumpiendo el flujo logístico hasta que la contraseña se restablezca.
+
+\subsection{Requisitos de Rendimiento}
+\begin{itemize}
+    \item \textbf{Tiempos de respuesta:} El sistema deberá responder a interacciones E-commerce (Add to Cart) en un lapso no superior a los 500ms al servidor bajo demanda transaccional promedio.
+    \item \textbf{Simultaneidad:} La arquitectura MVC y base de datos relacional soportarán múltiples operadores de despachos modificando existencias a la par, apalancándose de transacciones SQL.
+\end{itemize}
+
+\subsection{Atributos del Sistema}
+\subsubsection{Seguridad}
+- Uso exclusivo de directivas del ORM para evitar fallos de inyección SQL. \\
+- Protección CSRF adherida globalmente en todos los formularios HTML de método POST/PUT/DELETE. \\
+- Segmentación por middlewares en rutas administrativas y de clientes.
+
+\subsubsection{Fiabilidad y Mantenibilidad}
+La estructura de directorios sigue estrictamente el ecosistema formal de Laravel. El desacoplamiento entre las \textit{Controllers} y los modelos asegura un sencillo marco para escalar horizontalmente la plataforma.
+
+\end{document}
