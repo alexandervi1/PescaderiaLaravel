@@ -24,9 +24,11 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // 3. Productos Críticos con Bajo Stock (Ventas Menores a 50 unidades de inventario)
+        // 3. Productos Críticos con Bajo Stock (umbral configurable)
+        $umbral = \App\Models\Configuracion::obtenerUmbralBajoStock();
+
         $productosBajoStock = Producto::with(['categoria', 'unidadVenta'])
-            ->whereRaw('(stock * factor_conversion) < 50')
+            ->whereRaw('(stock * factor_conversion) < ?', [$umbral])
             ->take(5)
             ->get();
 

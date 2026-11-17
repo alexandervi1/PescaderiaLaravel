@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Carrito;
+use App\Models\Configuracion;
 use App\Models\Pedido;
 use App\Models\PedidoProducto;
 use App\Models\Producto;
@@ -63,12 +64,14 @@ class OrderService
                 'usuario_id' => $usuario->usuario_id,
                 'subtotal' => $totales['subtotal'],
                 'iva' => $totales['iva'],
+                'iva_pct' => $totales['iva_pct'],
                 'total' => $totales['total'],
                 'estado' => 'Pendiente',
             ]);
 
             // Secuencial a partir del ID insertado: seguro ante concurrencia.
-            $pedido->numero_comprobante = '001-001-' . str_pad($pedido->pedido_id, 9, '0', STR_PAD_LEFT);
+            $serie = Configuracion::obtenerSerieComprobante();
+            $pedido->numero_comprobante = $serie . '-' . str_pad($pedido->pedido_id, 9, '0', STR_PAD_LEFT);
             $pedido->save();
 
             foreach ($items as $item) {

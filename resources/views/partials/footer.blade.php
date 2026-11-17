@@ -2,10 +2,10 @@
     <div class="container text-center text-md-start">
         <div class="row align-items-center">
             <div class="col-md-7 col-lg-8">
-                <p>&copy; {{ date('Y') }} Comercial de Mariscos Don Walter. Todos los derechos reservados.</p>
+                <p>&copy; {{ date('Y') }} {{ $negocio['nombre'] }}. Todos los derechos reservados.</p>
                 <div class="small footer-meta">
-                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>Av. Canónigo Ramos y 11 de Noviembre</p>
-                    <p><i class="fas fa-phone me-2"></i>032311893 &nbsp;|&nbsp; 0992470053</p>
+                    <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>{{ $negocio['direccion'] }}</p>
+                    <p><i class="fas fa-phone me-2"></i>{{ $negocio['telefono'] }}</p>
                 </div>
             </div>
             <div class="col-md-5 col-lg-4 text-center text-md-end">

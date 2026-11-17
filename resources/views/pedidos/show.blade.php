@@ -78,7 +78,7 @@
                     <span class="fw-bold text-dark">${{ number_format($pedido->subtotal, 2) }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2 text-muted">
-                    <span>IVA ({{ $ivaPct }}%):</span>
+                    <span>IVA ({{ $pedido->iva_pct }}%):</span>
                     <span class="fw-bold text-dark">${{ number_format($pedido->iva, 2) }}</span>
                 </div>
                 

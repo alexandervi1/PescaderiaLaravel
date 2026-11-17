@@ -15,9 +15,8 @@ class PedidoController extends Controller
     public function show($id)
     {
         $pedido = Pedido::with(['productos.unidadVenta'])->where('usuario_id', auth()->id())->findOrFail($id);
-        $ivaPct = \App\Models\Configuracion::obtenerIva();
 
-        return view('pedidos.show', compact('pedido', 'ivaPct'));
+        return view('pedidos.show', compact('pedido'));
     }
 
     public function process(\App\Services\OrderService $orderService)
@@ -35,17 +34,7 @@ class PedidoController extends Controller
     public function receipt($id)
     {
         $pedido = Pedido::with(['productos.unidadVenta', 'usuario'])->where('usuario_id', auth()->id())->findOrFail($id);
-        
-        // Datos del negocio (SRI) leídos desde la Base de Datos
-        $negocio = [
-            'nombre' => \App\Models\Configuracion::obtenerValor('negocio_nombre', 'COMERCIAL DE MARISCOS DON WALTER'),
-            'ruc' => \App\Models\Configuracion::obtenerValor('negocio_ruc', '1301234567001'),
-            'direccion' => \App\Models\Configuracion::obtenerValor('negocio_direccion', 'Manta, Ecuador'),
-            'telefono' => \App\Models\Configuracion::obtenerValor('negocio_telefono', '0999999999'),
-            'leyenda' => \App\Models\Configuracion::obtenerValor('negocio_leyenda', 'CONTRIBUYENTE RÉGIMEN RIMPE - NEGOCIO POPULAR'),
-            'iva_pct' => \App\Models\Configuracion::obtenerIva(),
-        ];
 
-        return view('pedidos.receipt', compact('pedido', 'negocio'));
+        return view('pedidos.receipt', compact('pedido'));
     }
 }

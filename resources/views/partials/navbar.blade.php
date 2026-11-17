@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Brand / Logo -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <img src="{{ asset('img/Pescaderia%20Don%20Walter%20logo.png') }}" alt="Logo Pescaderia Don Walter" class="me-2">
+            <img src="{{ asset($negocio['logo']) }}" alt="Logo {{ $negocio['nombre'] }}" class="me-2">
         </a>
         <button class="navbar-toggler position-absolute d-lg-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="right: 15px; top: 15px;">
             <span class="navbar-toggler-icon"></span>

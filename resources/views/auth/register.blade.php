@@ -7,7 +7,7 @@
     <div class="col-md-7">
         <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
             <div class="card-header border-0 text-center py-4 bg-white">
-                <img src="{{ asset('img/Pescaderia Don Walter logo.png') }}" alt="Logo" class="img-fluid mb-3" style="max-height: 80px;">
+                <img src="{{ asset($negocio['logo']) }}" alt="Logo" class="img-fluid mb-3" style="max-height: 80px;">
                 <hr class="mx-5">
                 <h3 class="mb-0 fw-bold text-brand">Registro de Clientes</h3>
                 <hr class="mx-5">

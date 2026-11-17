@@ -138,6 +138,8 @@ class AdminFixesTest extends TestCase
             ->put(route('admin.configuracion.seguridad'), [
                 'nombre_completo' => 'Admin Uno',
                 'nombre_usuario' => 'admin_renombrado',
+                'correo' => 'admin1@example.com',
+                'current_password' => 'secret123',
             ])
             ->assertRedirect(route('login'));
 
@@ -151,10 +153,27 @@ class AdminFixesTest extends TestCase
             ->put(route('admin.configuracion.seguridad'), [
                 'nombre_completo' => 'Admin Uno',
                 'nombre_usuario' => 'admin1',
+                'correo' => 'admin1@example.com',
+                'current_password' => 'secret123',
                 'password' => 'nuevaClave123',
+                'password_confirmation' => 'nuevaClave123',
             ]);
 
         $this->assertNotNull($this->admin->fresh()->password_changed_at);
+    }
+
+    public function test_security_update_requires_the_current_password(): void
+    {
+        $this->actingAs($this->admin)
+            ->put(route('admin.configuracion.seguridad'), [
+                'nombre_completo' => 'Admin Uno',
+                'nombre_usuario' => 'admin1',
+                'correo' => 'admin1@example.com',
+                'current_password' => 'incorrecta',
+            ])
+            ->assertSessionHasErrors('current_password');
+
+        $this->assertDatabaseHas('usuario', ['usuario_id' => $this->admin->usuario_id, 'nombre_usuario' => 'admin1']);
     }
 
     public function test_admin_cannot_edit_another_admin_as_a_client(): void
@@ -307,5 +326,94 @@ class AdminFixesTest extends TestCase
         $response->assertOk();
         $this->assertSame('seguridad', $response->viewData('tab'));
         $response->assertSee('id="seguridad"', false);
+    }
+
+    public function test_footer_uses_the_business_configuration(): void
+    {
+        Configuracion::updateOrCreate(['clave' => 'negocio_direccion'], ['valor' => 'Calle Configurada 123']);
+        Configuracion::updateOrCreate(['clave' => 'negocio_telefono'], ['valor' => '0990001111']);
+        Configuracion::flush();
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $response->assertSee('Calle Configurada 123');
+        $response->assertSee('0990001111');
+    }
+
+    public function test_low_stock_threshold_is_configurable(): void
+    {
+        Producto::create([
+            'nombre' => 'Albacora',
+            'precio' => 10,
+            'stock' => 1,
+            'categoria_id' => 1,
+            'unidad_compra_id' => 3,
+            'unidad_venta_id' => 3,
+        ]);
+
+        Configuracion::updateOrCreate(['clave' => 'umbral_bajo_stock'], ['valor' => '100']);
+        Configuracion::flush();
+
+        $response = $this->actingAs($this->admin)->get(route('admin.reportes.bajo-stock'));
+        $this->assertCount(1, $response->viewData('productos'));
+
+        Configuracion::updateOrCreate(['clave' => 'umbral_bajo_stock'], ['valor' => '0']);
+        Configuracion::flush();
+
+        $response = $this->actingAs($this->admin)->get(route('admin.reportes.bajo-stock'));
+        $this->assertCount(0, $response->viewData('productos'));
+    }
+
+    public function test_receipt_uses_the_tax_rate_stored_on_the_order(): void
+    {
+        $producto = Producto::create([
+            'nombre' => 'Albacora',
+            'precio' => 10,
+            'stock' => 10,
+            'categoria_id' => 1,
+            'unidad_compra_id' => 3,
+            'unidad_venta_id' => 3,
+        ]);
+
+        Carrito::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'producto_id' => $producto->producto_id,
+            'cantidad' => 2,
+        ]);
+
+        $pedido = app(OrderService::class)->processOrder($this->cliente);
+        $this->assertEquals(15.0, (float) $pedido->iva_pct);
+
+        Configuracion::updateOrCreate(['clave' => 'iva_actual'], ['valor' => '20']);
+        Configuracion::flush();
+
+        $response = $this->actingAs($this->cliente)->get(route('pedidos.receipt', $pedido->pedido_id));
+
+        $response->assertOk();
+        $response->assertSee('IVA (15.00%)');
+    }
+
+    public function test_configuration_changes_are_logged(): void
+    {
+        $this->actingAs($this->admin)
+            ->put(route('admin.configuracion.update'), [
+                'iva_actual' => 12,
+                'umbral_bajo_stock' => 50,
+                'comprobante_serie' => '001-001',
+                'password_rotacion_dias' => 90,
+                'zona_horaria' => 'America/Guayaquil',
+                'negocio_nombre' => 'Pescadería Test',
+                'negocio_ruc' => '1301234567001',
+                'negocio_direccion' => 'Manta',
+                'negocio_telefono' => '0999999999',
+                'negocio_leyenda' => 'RIMPE',
+            ])
+            ->assertRedirect(route('admin.configuracion.edit'));
+
+        $this->assertDatabaseHas('configuracion_log', [
+            'clave' => 'iva_actual',
+            'valor_nuevo' => '12',
+        ]);
     }
 }

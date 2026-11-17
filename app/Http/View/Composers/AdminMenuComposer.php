@@ -2,6 +2,7 @@
 
 namespace App\Http\View\Composers;
 
+use App\Models\Configuracion;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\View\View;
@@ -15,7 +16,7 @@ class AdminMenuComposer
     {
         $view->with([
             'pendingOrders' => Pedido::where('estado', 'Pendiente')->count(),
-            'lowStockCount' => Producto::whereRaw('(stock * factor_conversion) < 50')->count(),
+            'lowStockCount' => Producto::whereRaw('(stock * factor_conversion) < ?', [Configuracion::obtenerUmbralBajoStock()])->count(),
         ]);
     }
 }

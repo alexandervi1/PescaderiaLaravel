@@ -37,8 +37,9 @@ class Usuario extends Authenticatable
     /**
      * ¿La contraseña supera la antigüedad máxima permitida?
      */
-    public function passwordVencida(int $dias = 90): bool
+    public function passwordVencida(?int $dias = null): bool
     {
+        $dias = $dias ?? \App\Models\Configuracion::obtenerRotacionDias();
         $desde = $this->password_changed_at ?? $this->created_at;
 
         return $desde !== null && $desde->diffInDays(now()) >= $dias;

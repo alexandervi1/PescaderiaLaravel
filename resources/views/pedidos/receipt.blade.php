@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="col-4 text-center">
-            <img src="{{ asset('img/Pescaderia Don Walter logo.png') }}" alt="Logo" class="receipt-logo">
+            <img src="{{ asset($negocio['logo']) }}" alt="Logo" class="receipt-logo">
         </div>
     </div>
 
@@ -91,7 +91,7 @@
                         <td class="text-end">${{ number_format($pedido->subtotal, 2) }}</td>
                     </tr>
                     <tr>
-                        <td>IVA ({{ $negocio['iva_pct'] }}%):</td>
+                        <td>IVA ({{ $pedido->iva_pct }}%):</td>
                         <td class="text-end">${{ number_format($pedido->iva, 2) }}</td>
                     </tr>
                     <tr class="border-top table-secondary">

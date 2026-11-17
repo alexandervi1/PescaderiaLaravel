@@ -4,32 +4,36 @@
 
 @section('content')
 <div class="row mt-4">
-    <div class="col-md-9 mx-auto">
+    <div class="col-lg-10 mx-auto">
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <div class="card-header bg-white pt-4 pb-0 border-bottom-0">
-                <ul class="nav nav-tabs border-bottom-0" id="configTabs" role="tablist">
+                <ul class="nav nav-tabs border-bottom-0 flex-nowrap overflow-auto" id="configTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $tab === 'negocio' ? 'active fw-bold text-primary px-4 py-3 border-0 border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0' }}" id="negocio-tab" data-bs-toggle="tab" data-bs-target="#negocio" type="button" role="tab" aria-controls="negocio" aria-selected="{{ $tab === 'negocio' ? 'true' : 'false' }}">
+                        <button class="nav-link {{ $tab === 'negocio' ? 'active fw-bold text-primary px-4 py-3 border-0 text-nowrap border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0 text-nowrap' }}" id="negocio-tab" data-bs-toggle="tab" data-bs-target="#negocio" type="button" role="tab" aria-controls="negocio" aria-selected="{{ $tab === 'negocio' ? 'true' : 'false' }}">
                             <i class="fas fa-store me-2"></i> Datos del Negocio
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $tab === 'seguridad' ? 'active fw-bold text-primary px-4 py-3 border-0 border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0' }}" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab" aria-controls="seguridad" aria-selected="{{ $tab === 'seguridad' ? 'true' : 'false' }}">
+                        <button class="nav-link {{ $tab === 'seguridad' ? 'active fw-bold text-primary px-4 py-3 border-0 text-nowrap border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0 text-nowrap' }}" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab" aria-controls="seguridad" aria-selected="{{ $tab === 'seguridad' ? 'true' : 'false' }}">
                             <i class="fas fa-shield-alt me-2"></i> Seguridad y Acceso
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $tab === 'historial' ? 'active fw-bold text-primary px-4 py-3 border-0 text-nowrap border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0 text-nowrap' }}" id="historial-tab" data-bs-toggle="tab" data-bs-target="#historial" type="button" role="tab" aria-controls="historial" aria-selected="{{ $tab === 'historial' ? 'true' : 'false' }}">
+                            <i class="fas fa-clock-rotate-left me-2"></i> Historial
                         </button>
                     </li>
                 </ul>
             </div>
-            
+
             <div class="card-body p-0 bg-light">
                 <div class="tab-content" id="configTabsContent">
-                    
-                    <!-- Pestaña Negocio -->
+
                     <div class="tab-pane fade {{ $tab === 'negocio' ? 'show active' : '' }} p-4 p-md-5 bg-white" id="negocio" role="tabpanel" aria-labelledby="negocio-tab">
-                        <form action="{{ route('admin.configuracion.update') }}" method="POST">
+                        <form action="{{ route('admin.configuracion.update') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            
+
                             <h6 class="fw-bold mb-4 text-primary"><i class="fas fa-file-invoice-dollar me-2"></i> Información Fiscal Tributaria</h6>
                             <div class="row g-4 mb-5">
                                 <div class="col-md-6">
@@ -51,6 +55,7 @@
                                 <div class="col-md-7">
                                     <label class="form-label fw-bold text-secondary">Dirección del Local</label>
                                     <input type="text" class="form-control" name="negocio_direccion" value="{{ old('negocio_direccion', $configuraciones['negocio_direccion']) }}" required>
+                                    <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i> Se muestra en el pie de página y en los comprobantes.</div>
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label fw-bold text-secondary">Teléfono de Soporte</label>
@@ -58,14 +63,64 @@
                                 </div>
                             </div>
 
+                            <h6 class="fw-bold mb-4 text-primary"><i class="fas fa-image me-2"></i> Identidad Visual</h6>
+                            <div class="row g-4 align-items-center mb-5">
+                                <div class="col-md-2 text-center">
+                                    <img src="{{ asset($configuraciones['negocio_logo']) }}" alt="Logo actual" class="img-thumbnail shadow-sm rounded-4 bg-white" style="max-height: 80px; width: 100%; object-fit: contain;">
+                                    <span class="d-block small text-muted mt-2">Logo actual</span>
+                                </div>
+                                <div class="col-md-10">
+                                    <label for="negocio_logo" class="form-label fw-bold">Cambiar logo</label>
+                                    <input class="form-control" type="file" id="negocio_logo" name="negocio_logo" accept=".jpg,.jpeg,.png,.webp">
+                                    <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i> JPG, PNG o WEBP, máximo 2MB. Se usa en la tienda, el panel y los comprobantes.</div>
+                                </div>
+                            </div>
+
                             <h6 class="fw-bold mb-4 text-primary"><i class="fas fa-calculator me-2"></i> Cálculos Comerciales</h6>
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-5">
-                                    <label for="iva_actual" class="form-label fw-bold text-secondary">Porcentaje de IVA (%)</label>
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-3">
+                                    <label for="iva_actual" class="form-label fw-bold text-secondary">IVA (%)</label>
                                     <div class="input-group border rounded">
                                         <span class="input-group-text bg-light border-0"><i class="fas fa-percent text-primary"></i></span>
                                         <input type="number" step="0.01" min="0" max="100" class="form-control" id="iva_actual" name="iva_actual" value="{{ old('iva_actual', $configuraciones['iva_actual']) }}" required>
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="umbral_bajo_stock" class="form-label fw-bold text-secondary">Umbral bajo stock</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-boxes-stacked text-primary"></i></span>
+                                        <input type="number" min="0" class="form-control" id="umbral_bajo_stock" name="umbral_bajo_stock" value="{{ old('umbral_bajo_stock', $configuraciones['umbral_bajo_stock']) }}" required>
+                                    </div>
+                                    <div class="form-text mt-2">Unidades de venta por debajo de las cuales se alerta.</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="comprobante_serie" class="form-label fw-bold text-secondary">Serie de comprobante</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-receipt text-primary"></i></span>
+                                        <input type="text" class="form-control" id="comprobante_serie" name="comprobante_serie" value="{{ old('comprobante_serie', $configuraciones['comprobante_serie']) }}" pattern="[0-9]{3}-[0-9]{3}" required>
+                                    </div>
+                                    <div class="form-text mt-2">Formato 000-000.</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="password_rotacion_dias" class="form-label fw-bold text-secondary">Rotación de contraseña</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-key text-primary"></i></span>
+                                        <input type="number" min="1" max="3650" class="form-control" id="password_rotacion_dias" name="password_rotacion_dias" value="{{ old('password_rotacion_dias', $configuraciones['password_rotacion_dias']) }}" required>
+                                    </div>
+                                    <div class="form-text mt-2">Días antes de avisar que la clave venció.</div>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold mb-4 text-primary"><i class="fas fa-globe me-2"></i> Sistema</h6>
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-5">
+                                    <label for="zona_horaria" class="form-label fw-bold text-secondary">Zona horaria</label>
+                                    <select class="form-select" id="zona_horaria" name="zona_horaria" required>
+                                        @foreach($zonas as $zona)
+                                            <option value="{{ $zona }}" {{ old('zona_horaria', $configuraciones['zona_horaria']) === $zona ? 'selected' : '' }}>{{ $zona }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="form-text mt-2">Afecta fechas de pedidos, comprobantes y reportes.</div>
                                 </div>
                             </div>
 
@@ -76,46 +131,70 @@
                             </div>
                         </form>
                     </div>
-                    
-                    <!-- Pestaña Seguridad -->
+
                     <div class="tab-pane fade {{ $tab === 'seguridad' ? 'show active' : '' }} p-4 p-md-5 bg-white" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
                         <div class="alert alert-info rounded-3 mb-5 border-0 shadow-sm d-flex align-items-center">
                             <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
                             <div>
                                 <h6 class="fw-bold mb-1">Protección de Cuenta</h6>
-                                <p class="mb-0 small text-dark">Modifique su usuario y contraseña maestra aquí. Al guardar, el sistema requerirá que inicie sesión nuevamente.</p>
+                                <p class="mb-0 small text-dark">Modifique su usuario, correo y contraseña maestra aquí. Al cambiar usuario o contraseña, el sistema cerrará la sesión.</p>
                             </div>
                         </div>
 
                         <form action="{{ route('admin.configuracion.seguridad') }}" method="POST">
                             @csrf
                             @method('PUT')
-                            
+
                             <div class="row g-4">
-                                <div class="col-md-12 mb-2">
+                                <div class="col-md-6">
                                     <label class="form-label fw-bold text-secondary">Nombre Completo del Administrador</label>
                                     <div class="input-group border rounded">
                                         <span class="input-group-text bg-light border-0"><i class="fas fa-id-badge text-primary"></i></span>
                                         <input type="text" class="form-control" name="nombre_completo" value="{{ old('nombre_completo', auth()->user()->nombre_completo) }}" required autocomplete="name">
                                     </div>
-                                    <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i> Este es tu nombre real que verán los clientes en algunas constancias o recibos.</div>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold text-secondary">Nombre de Usuario (Para Iniciar Sesión)</label>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Correo Electrónico</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-envelope text-primary"></i></span>
+                                        <input type="email" class="form-control" name="correo" value="{{ old('correo', auth()->user()->correo) }}" required autocomplete="email">
+                                    </div>
+                                    <div class="form-text mt-2">También sirve para iniciar sesión.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Nombre de Usuario</label>
                                     <div class="input-group border rounded">
                                         <span class="input-group-text bg-light border-0"><i class="fas fa-user-shield text-primary"></i></span>
                                         <input type="text" class="form-control" name="nombre_usuario" value="{{ old('nombre_usuario', auth()->user()->nombre_usuario) }}" required autocomplete="username">
                                     </div>
                                 </div>
-                                
-                                <div class="col-md-6 mb-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Contraseña Actual</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-lock text-primary"></i></span>
+                                        <input type="password" class="form-control" name="current_password" required autocomplete="current-password" placeholder="Confirma tu contraseña">
+                                    </div>
+                                    <div class="form-text mt-2">Necesaria para guardar cualquier cambio de credenciales.</div>
+                                </div>
+
+                                <div class="col-md-6">
                                     <label class="form-label fw-bold text-secondary">Nueva Contraseña</label>
                                     <div class="input-group border rounded">
                                         <span class="input-group-text bg-light border-0"><i class="fas fa-key text-primary"></i></span>
                                         <input type="password" class="form-control" name="password" placeholder="Dejar en blanco para no cambiar" autocomplete="new-password">
                                     </div>
-                                    <div class="form-text mt-2"><i class="fas fa-shield-alt me-1"></i> Mínimo 8 caracteres.</div>
+                                    <div class="form-text mt-2">Mínimo 8 caracteres.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold text-secondary">Confirmar Nueva Contraseña</label>
+                                    <div class="input-group border rounded">
+                                        <span class="input-group-text bg-light border-0"><i class="fas fa-check-double text-primary"></i></span>
+                                        <input type="password" class="form-control" name="password_confirmation" placeholder="Repite la nueva contraseña" autocomplete="new-password">
+                                    </div>
                                 </div>
                             </div>
 
@@ -125,6 +204,42 @@
                                 </button>
                             </div>
                         </form>
+                    </div>
+
+                    <div class="tab-pane fade {{ $tab === 'historial' ? 'show active' : '' }} p-4 p-md-5 bg-white" id="historial" role="tabpanel" aria-labelledby="historial-tab">
+                        <h6 class="fw-bold mb-4 text-primary"><i class="fas fa-clock-rotate-left me-2"></i> Últimos cambios de configuración</h6>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Fecha</th>
+                                        <th>Usuario</th>
+                                        <th>Clave</th>
+                                        <th>Antes</th>
+                                        <th class="pe-3">Después</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($historial as $cambio)
+                                        <tr>
+                                            <td class="ps-3 text-muted small">{{ $cambio->created_at?->format('d/m/Y H:i') }}</td>
+                                            <td class="small">{{ $cambio->usuario->nombre_usuario ?? 'Sistema' }}</td>
+                                            <td><code class="small">{{ $cambio->clave }}</code></td>
+                                            <td class="small text-muted">{{ $cambio->valor_anterior ?? '—' }}</td>
+                                            <td class="small fw-bold pe-3">{{ $cambio->valor_nuevo ?? '—' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5">
+                                                <i class="fas fa-clock-rotate-left fa-3x text-muted mb-3 opacity-50"></i>
+                                                <h5 class="text-muted">Todavía no hay cambios registrados.</h5>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
@@ -137,22 +252,18 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Handle tab persistence or deep-linking via URL hash
         if (window.location.hash === '#seguridad') {
             var tab = new bootstrap.Tab(document.querySelector('#seguridad-tab'));
             tab.show();
         }
-        
-        // Stylish tab transitions
-        const tabs = document.querySelectorAll('.nav-link');
+
+        const tabs = document.querySelectorAll('#configTabs .nav-link');
         tabs.forEach(tab => {
             tab.addEventListener('shown.bs.tab', function(e) {
-                // Reset all tabs
                 tabs.forEach(t => {
                     t.classList.remove('text-primary', 'border-bottom', 'border-primary', 'border-3');
                     t.classList.add('text-secondary', 'border-0');
                 });
-                // Style active tab
                 e.target.classList.remove('text-secondary', 'border-0');
                 e.target.classList.add('text-primary', 'border-bottom', 'border-primary', 'border-3');
             });

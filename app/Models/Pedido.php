@@ -10,11 +10,12 @@ class Pedido extends Model
     protected $primaryKey = 'pedido_id';
     public $timestamps = false;
 
-    protected $fillable = ['usuario_id', 'fecha_pedido', 'subtotal', 'iva', 'total', 'numero_comprobante', 'estado'];
+    protected $fillable = ['usuario_id', 'fecha_pedido', 'subtotal', 'iva', 'iva_pct', 'total', 'numero_comprobante', 'estado'];
 
     protected $casts = [
         'subtotal' => 'decimal:2',
         'iva' => 'decimal:2',
+        'iva_pct' => 'decimal:2',
         'total' => 'decimal:2',
         'fecha_pedido' => 'datetime',
     ];
