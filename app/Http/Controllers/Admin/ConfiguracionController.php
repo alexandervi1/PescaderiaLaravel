@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class ConfiguracionController extends Controller
 {
-    public function edit()
+    public function edit(Request $request)
     {
         $configuraciones = [
             'iva_actual' => Configuracion::obtenerValor('iva_actual', 15),
@@ -20,7 +20,9 @@ class ConfiguracionController extends Controller
             'negocio_leyenda' => Configuracion::obtenerValor('negocio_leyenda', ''),
         ];
 
-        return view('admin.configuracion.edit', compact('configuraciones'));
+        $tab = $request->query('tab') === 'seguridad' ? 'seguridad' : 'negocio';
+
+        return view('admin.configuracion.edit', compact('configuraciones', 'tab'));
     }
 
     public function update(Request $request)

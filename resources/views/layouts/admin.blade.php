@@ -38,21 +38,26 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar Offcanvas para móviles y columna en PC -->
-            <div class="sidebar bg-white offcanvas-md offcanvas-start vh-100 col-md-3 col-lg-2 p-0" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-                <div class="offcanvas-header border-bottom d-md-none">
+            <div class="sidebar bg-white offcanvas-lg offcanvas-start vh-100 col-lg-2 p-0" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+                <div class="offcanvas-header border-bottom d-lg-none">
                     <h5 class="offcanvas-title fw-bold" id="sidebarMenuLabel"><i class="fas fa-bars me-2 text-primary"></i> Menú</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-                    <ul class="nav flex-column gap-2 px-3 w-100">
+                <div class="offcanvas-body d-lg-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+                    <ul class="nav flex-column gap-1 px-3 w-100">
                         <li class="nav-item">
                             <a class="nav-link rounded {{ request()->routeIs('admin.dashboard') ? 'active' : 'text-dark' }}" href="{{ route('admin.dashboard') }}">
                                 <i class="fas fa-home fa-fw me-2"></i> Dashboard
                             </a>
                         </li>
+
+                        <li class="nav-section">Catálogo</li>
                         <li class="nav-item">
-                            <a class="nav-link rounded {{ request()->routeIs('admin.productos.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.productos.index') }}">
-                                <i class="fas fa-fish fa-fw me-2"></i> Productos
+                            <a class="nav-link rounded d-flex align-items-center justify-content-between {{ request()->routeIs('admin.productos.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.productos.index') }}">
+                                <span><i class="fas fa-fish fa-fw me-2"></i> Productos</span>
+                                @if($lowStockCount > 0)
+                                    <span class="badge badge-menu" title="{{ $lowStockCount }} {{ $lowStockCount === 1 ? 'producto bajo el umbral' : 'productos bajo el umbral' }}">{{ $lowStockCount }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">
@@ -61,8 +66,18 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link rounded {{ request()->routeIs('admin.pedidos.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.pedidos.index') }}">
-                                <i class="fas fa-box-open fa-fw me-2"></i> Pedidos
+                            <a class="nav-link rounded {{ request()->routeIs('admin.unidades.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.unidades.index') }}">
+                                <i class="fas fa-ruler-combined fa-fw me-2"></i> Unidades
+                            </a>
+                        </li>
+
+                        <li class="nav-section">Ventas</li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded d-flex align-items-center justify-content-between {{ request()->routeIs('admin.pedidos.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.pedidos.index') }}">
+                                <span><i class="fas fa-box-open fa-fw me-2"></i> Pedidos</span>
+                                @if($pendingOrders > 0)
+                                    <span class="badge badge-menu" title="{{ $pendingOrders }} {{ $pendingOrders === 1 ? 'pedido pendiente' : 'pedidos pendientes' }}">{{ $pendingOrders }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">
@@ -70,6 +85,13 @@
                                 <i class="fas fa-users fa-fw me-2"></i> Clientes
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded {{ request()->routeIs('admin.carritos.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.carritos.index') }}">
+                                <i class="fas fa-cart-shopping fa-fw me-2"></i> Carritos
+                            </a>
+                        </li>
+
+                        <li class="nav-section">Análisis</li>
                         <li class="nav-item">
                             <button class="nav-link rounded dropdown-toggle d-flex align-items-center justify-content-between w-100 border-0 {{ request()->routeIs('admin.reportes.*') ? 'active' : 'text-dark' }}" data-bs-toggle="collapse" data-bs-target="#reportesMenu" aria-expanded="{{ request()->routeIs('admin.reportes.*') ? 'true' : 'false' }}" aria-controls="reportesMenu">
                                 <span><i class="fas fa-chart-line fa-fw me-2"></i> Reportes</span>
@@ -83,9 +105,22 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item mt-4">
-                            <a class="nav-link rounded {{ request()->routeIs('admin.configuracion.*') ? 'active' : 'text-secondary' }}" href="{{ route('admin.configuracion.edit') }}">
-                                <i class="fas fa-cog fa-fw me-2"></i> Configuración
+
+                        <li class="nav-section">Sistema</li>
+                        <li class="nav-item">
+                            <button class="nav-link rounded dropdown-toggle d-flex align-items-center justify-content-between w-100 border-0 {{ request()->routeIs('admin.configuracion.*') ? 'active' : 'text-dark' }}" data-bs-toggle="collapse" data-bs-target="#configMenu" aria-expanded="{{ request()->routeIs('admin.configuracion.*') ? 'true' : 'false' }}" aria-controls="configMenu">
+                                <span><i class="fas fa-cog fa-fw me-2"></i> Configuración</span>
+                            </button>
+                            <div class="collapse overflow-hidden {{ request()->routeIs('admin.configuracion.*') ? 'show' : '' }}" id="configMenu">
+                                <ul class="nav flex-column ms-3 mt-1 pb-2">
+                                    <li class="nav-item"><a class="nav-link rounded py-1 {{ request()->routeIs('admin.configuracion.edit') && request('tab') !== 'seguridad' ? 'active' : 'text-secondary' }}" href="{{ route('admin.configuracion.edit') }}"><i class="fas fa-angle-right me-2"></i>Datos del negocio</a></li>
+                                    <li class="nav-item"><a class="nav-link rounded py-1 {{ request('tab') === 'seguridad' ? 'active' : 'text-secondary' }}" href="{{ route('admin.configuracion.edit', ['tab' => 'seguridad']) }}"><i class="fas fa-angle-right me-2"></i>Seguridad y acceso</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link rounded {{ request()->routeIs('admin.administradores.*') ? 'active' : 'text-dark' }}" href="{{ route('admin.administradores.index') }}">
+                                <i class="fas fa-user-shield fa-fw me-2"></i> Administradores
                             </a>
                         </li>
                         <li class="nav-item border-top mt-3 pt-3">
@@ -101,7 +136,7 @@
             </div>
 
             <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main class="col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
                     <h1 class="h2">@yield('title', 'Dashboard')</h1>
                     @yield('actions')

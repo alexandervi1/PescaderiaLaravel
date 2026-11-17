@@ -235,4 +235,77 @@ class AdminFixesTest extends TestCase
 
         $this->assertEquals(115.0, $total, 'Solo debe sumar pedidos del año actual no cancelados.');
     }
+
+    public function test_orders_can_be_filtered_by_status(): void
+    {
+        Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'subtotal' => 10,
+            'iva' => 1.5,
+            'total' => 11.5,
+            'estado' => 'Pendiente',
+        ]);
+
+        Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'subtotal' => 20,
+            'iva' => 3,
+            'total' => 23,
+            'estado' => 'Entregado',
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->get(route('admin.pedidos.index', ['estado' => 'Entregado']));
+
+        $response->assertOk();
+
+        $pedidos = $response->viewData('pedidos');
+        $this->assertCount(1, $pedidos);
+        $this->assertSame('Entregado', $pedidos->first()->estado);
+    }
+
+    public function test_invalid_order_status_filter_falls_back_to_all(): void
+    {
+        Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'subtotal' => 10,
+            'iva' => 1.5,
+            'total' => 11.5,
+            'estado' => 'Pendiente',
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->get(route('admin.pedidos.index', ['estado' => 'Cualquiera']));
+
+        $response->assertOk();
+        $this->assertNull($response->viewData('estado'));
+        $this->assertCount(1, $response->viewData('pedidos'));
+    }
+
+    public function test_admin_menu_shows_pending_orders_badge(): void
+    {
+        Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'subtotal' => 10,
+            'iva' => 1.5,
+            'total' => 11.5,
+            'estado' => 'Pendiente',
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('badge-menu', false);
+        $response->assertSee('1 pedido pendiente', false);
+    }
+
+    public function test_configuration_opens_the_security_tab_from_the_query(): void
+    {
+        $response = $this->actingAs($this->admin)
+            ->get(route('admin.configuracion.edit', ['tab' => 'seguridad']));
+
+        $response->assertOk();
+        $this->assertSame('seguridad', $response->viewData('tab'));
+        $response->assertSee('id="seguridad"', false);
+    }
 }

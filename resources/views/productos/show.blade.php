@@ -15,7 +15,7 @@
 
     <div class="row g-4 mb-5">
         <!-- Columna Izquierda: Imagen Grande -->
-        <div class="col-lg-5">
+        <div class="col-md-6 col-xl-5">
             <div class="bg-white rounded-4 shadow-sm border p-4 text-center position-relative h-100 d-flex align-items-center justify-content-center" style="min-height: 450px;">
                 <img src="{{ asset($producto->imagen_url ?? 'img/placeholder.jpg') }}" 
                      alt="{{ $producto->nombre }}" 
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Columna Central: Información del Producto -->
-        <div class="col-lg-4 d-flex flex-column">
+        <div class="col-md-6 col-xl-4 d-flex flex-column">
             <div class="mb-3">
                 <h1 class="display-6 fw-bolder mb-2 text-dark" style="line-height: 1.2;">{{ $producto->nombre }}</h1>
                 <div class="d-flex align-items-center gap-2 mb-3">
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Columna Derecha: Panel de Compra (Buy Box) -->
-        <div class="col-lg-3">
+        <div class="col-12 col-xl-3">
             <div class="card border-1 shadow-sm rounded-4 h-100">
                 <div class="card-body p-4 d-flex flex-column">
                     <h5 class="fw-bold mb-3 text-dark">Panel de Compra</h5>

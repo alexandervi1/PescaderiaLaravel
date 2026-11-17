@@ -203,6 +203,19 @@ hr {
     overflow: hidden;
 }
 
+.product-desc {
+    max-width: 200px;
+}
+
+.badge-categoria {
+    display: inline-block;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
 /* ── 5. Navbar ───────────────────────────────────────────────────────────── */
 .navbar {
     background-color: var(--color-primary) !important;
@@ -298,6 +311,30 @@ hr {
 }
 
 .sidebar .nav-link.active i {
+    color: var(--color-on-primary);
+}
+
+/* Etiquetas de sección del menú */
+.sidebar .nav-section {
+    padding: 0.85rem 0.9rem 0.25rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.sidebar .badge-menu {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-strong);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+}
+
+.sidebar .nav-link.active .badge-menu {
+    background-color: rgba(255, 255, 255, 0.22);
     color: var(--color-on-primary);
 }
 
@@ -742,6 +779,20 @@ div.dataTables_wrapper .paginate_button.current {
     }
 }
 
+@media (max-width: 1199.98px) {
+    .table > thead th {
+        white-space: normal;
+    }
+
+    .product-desc {
+        max-width: 170px;
+    }
+
+    .badge-categoria {
+        max-width: 110px;
+    }
+}
+
 /* ── 18. Impresión ───────────────────────────────────────────────────────── */
 @media print {
     .no-print,
@@ -785,6 +836,31 @@ div.dataTables_wrapper .paginate_button.current {
 /* ── 19. Ajustes de componente ───────────────────────────────────────────── */
 .admin-topbar {
     height: 80px;
+}
+
+/* Tablets y pantallas táctiles: objetivos de 44px */
+@media (pointer: coarse), (min-width: 768px) and (max-width: 1024px) {
+    .btn-action {
+        width: 44px;
+        height: 44px;
+    }
+
+    .btn-sm {
+        min-height: 38px;
+    }
+
+    .sidebar .nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Cajón lateral más estrecho en tablets */
+@media (max-width: 991.98px) {
+    .offcanvas-lg {
+        --bs-offcanvas-width: 320px;
+    }
 }
 
 .admin-topbar-btn {

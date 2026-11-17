@@ -23,7 +23,7 @@
                         <th scope="col">Categoría</th>
                         <th scope="col" class="text-center">Precio Unit.</th>
                         <th scope="col" class="text-center">Stock Venta</th>
-                        <th scope="col" class="text-center">Inventario General</th>
+                        <th scope="col" class="text-center d-none d-xl-table-cell">Inventario General</th>
                         <th scope="col" class="text-center pe-4">Acciones</th>
                     </tr>
                 </thead>
@@ -35,12 +35,12 @@
                                     <img src="{{ asset($producto->imagen_url ?? 'img/placeholder.jpg') }}" class="rounded-3 me-3 object-fit-cover shadow-sm border" style="width: 50px; height: 50px;" alt="{{ $producto->nombre }}">
                                     <div>
                                         <h6 class="mb-0 fw-bold">{{ $producto->nombre }}</h6>
-                                        <div class="small text-muted text-truncate" style="max-width: 200px;">{{ $producto->descripcion }}</div>
+                                        <div class="small text-muted text-truncate product-desc">{{ $producto->descripcion }}</div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-info text-dark rounded-pill">{{ $producto->categoria->nombre ?? 'Ninguna' }}</span>
+                                <span class="badge bg-info text-dark rounded-pill badge-categoria">{{ $producto->categoria->nombre ?? 'Ninguna' }}</span>
                             </td>
                             <td class="text-center fw-bold text-success">
                                 ${{ number_format($producto->precio, 2) }}
@@ -53,7 +53,7 @@
                                     <span class="px-2">{{ $stockVenta }} {{ $producto->unidadVenta->abreviatura ?? 'u' }}</span>
                                 @endif
                             </td>
-                            <td class="text-center text-muted small">
+                            <td class="text-center text-muted small d-none d-xl-table-cell">
                                 {{ number_format($producto->stock, 4) }} {{ $producto->unidadCompra->abreviatura ?? '?' }}
                             </td>
                             <td class="text-center pe-4">

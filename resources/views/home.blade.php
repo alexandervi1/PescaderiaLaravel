@@ -39,7 +39,7 @@
 <!-- Grid de Productos -->
 <div class="row g-4">
     @forelse($productos as $producto)
-        <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="col-sm-6 col-md-4 col-xl-3">
             <div class="card h-100 shadow-sm border-0 product-card overflow-hidden rounded-4">
                 <div class="position-relative overflow-hidden">
                     <a href="{{ route('productos.show', $producto->producto_id) }}">

@@ -9,12 +9,12 @@
             <div class="card-header bg-white pt-4 pb-0 border-bottom-0">
                 <ul class="nav nav-tabs border-bottom-0" id="configTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-bold text-primary px-4 py-3 border-0 border-bottom border-primary border-3" id="negocio-tab" data-bs-toggle="tab" data-bs-target="#negocio" type="button" role="tab" aria-controls="negocio" aria-selected="true">
+                        <button class="nav-link {{ $tab === 'negocio' ? 'active fw-bold text-primary px-4 py-3 border-0 border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0' }}" id="negocio-tab" data-bs-toggle="tab" data-bs-target="#negocio" type="button" role="tab" aria-controls="negocio" aria-selected="{{ $tab === 'negocio' ? 'true' : 'false' }}">
                             <i class="fas fa-store me-2"></i> Datos del Negocio
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-secondary px-4 py-3 border-0" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab" aria-controls="seguridad" aria-selected="false">
+                        <button class="nav-link {{ $tab === 'seguridad' ? 'active fw-bold text-primary px-4 py-3 border-0 border-bottom border-primary border-3' : 'fw-bold text-secondary px-4 py-3 border-0' }}" id="seguridad-tab" data-bs-toggle="tab" data-bs-target="#seguridad" type="button" role="tab" aria-controls="seguridad" aria-selected="{{ $tab === 'seguridad' ? 'true' : 'false' }}">
                             <i class="fas fa-shield-alt me-2"></i> Seguridad y Acceso
                         </button>
                     </li>
@@ -25,7 +25,7 @@
                 <div class="tab-content" id="configTabsContent">
                     
                     <!-- Pestaña Negocio -->
-                    <div class="tab-pane fade show active p-4 p-md-5 bg-white" id="negocio" role="tabpanel" aria-labelledby="negocio-tab">
+                    <div class="tab-pane fade {{ $tab === 'negocio' ? 'show active' : '' }} p-4 p-md-5 bg-white" id="negocio" role="tabpanel" aria-labelledby="negocio-tab">
                         <form action="{{ route('admin.configuracion.update') }}" method="POST">
                             @csrf
                             @method('PUT')
@@ -78,7 +78,7 @@
                     </div>
                     
                     <!-- Pestaña Seguridad -->
-                    <div class="tab-pane fade p-4 p-md-5 bg-white" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
+                    <div class="tab-pane fade {{ $tab === 'seguridad' ? 'show active' : '' }} p-4 p-md-5 bg-white" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
                         <div class="alert alert-info rounded-3 mb-5 border-0 shadow-sm d-flex align-items-center">
                             <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
                             <div>

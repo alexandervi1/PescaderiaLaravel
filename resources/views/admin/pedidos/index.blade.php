@@ -9,6 +9,16 @@
         <span class="badge bg-light text-muted fw-normal">{{ $pedidos->count() }} {{ \Illuminate\Support\Str::plural('registro', $pedidos->count()) }}</span>
     </div>
     <div class="card-body p-4">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="{{ route('admin.pedidos.index') }}" class="btn btn-sm rounded-pill {{ $estado ? 'btn-outline-secondary' : 'btn-primary' }}">
+                Todos ({{ $conteos->sum() }})
+            </a>
+            @foreach($estados as $opcion)
+                <a href="{{ route('admin.pedidos.index', ['estado' => $opcion]) }}" class="btn btn-sm rounded-pill {{ $estado === $opcion ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    {{ $opcion }} ({{ $conteos[$opcion] ?? 0 }})
+                </a>
+            @endforeach
+        </div>
         <div class="table-responsive">
             <table class="table table-hover align-middle datatable">
                 <thead class="table-light">

@@ -9,12 +9,22 @@ use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $estados = ['Pendiente', 'Enviado', 'Entregado', 'Cancelado'];
+        $estado = $request->query('estado');
+        $estado = in_array($estado, $estados, true) ? $estado : null;
+
         $pedidos = Pedido::with('usuario')
+                    ->when($estado, fn ($query) => $query->where('estado', $estado))
                     ->orderBy('fecha_pedido', 'desc')
                     ->get();
-        return view('admin.pedidos.index', compact('pedidos'));
+
+        $conteos = Pedido::selectRaw('estado, count(*) as pedidos')
+                    ->groupBy('estado')
+                    ->pluck('pedidos', 'estado');
+
+        return view('admin.pedidos.index', compact('pedidos', 'estado', 'estados', 'conteos'));
     }
 
     public function show($id)

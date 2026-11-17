@@ -54,8 +54,21 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // CRUD de Categorías
     Route::resource('categorias', \App\Http\Controllers\Admin\CategoriaController::class)->except(['create', 'show', 'edit']);
 
+    // Unidades de medida (determinan los factores de conversión)
+    Route::resource('unidades', \App\Http\Controllers\Admin\UnidadMedidaController::class)
+        ->parameters(['unidades' => 'unidad'])
+        ->only(['index', 'store', 'update', 'destroy']);
+
     // CRUD de Clientes
     Route::resource('clientes', AdminClienteController::class)->except(['show']);
+
+    // Carritos activos (seguimiento comercial)
+    Route::get('/carritos', [\App\Http\Controllers\Admin\CarritoController::class, 'index'])->name('carritos.index');
+
+    // Administradores del sistema
+    Route::resource('administradores', \App\Http\Controllers\Admin\AdministradorController::class)
+        ->parameters(['administradores' => 'administrador'])
+        ->except(['show']);
 
     // Gestión de Pedidos
     Route::resource('pedidos', \App\Http\Controllers\Admin\PedidoController::class)->only(['index', 'show', 'update']);

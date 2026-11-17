@@ -19,7 +19,7 @@
 
 <div class="row g-4">
     @forelse($categoria->productos as $producto)
-        <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="col-sm-6 col-md-4 col-xl-3">
             <div class="card h-100 shadow-sm border-0 product-card overflow-hidden rounded-4">
                 <div class="position-relative">
                     <img src="{{ asset($producto->imagen_url ?? 'img/placeholder.jpg') }}" class="card-img-top object-fit-cover" style="height: 200px;" alt="{{ $producto->nombre }}">
