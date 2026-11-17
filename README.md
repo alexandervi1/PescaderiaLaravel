@@ -1,96 +1,137 @@
-# 🐟 Pescadería Don Walter - Plataforma E-commerce y Gestión
+# 🐟 Pescadería Don Walter — Plataforma E-commerce y Gestión
 
 ![Laravel](https://img.shields.io/badge/Laravel-9.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-Plataforma integral desarrollada en **Laravel 9** para la automatización, gestión y venta electrónica de productos del mar. El sistema cuenta con una fachada pública para clientes y un **potente panel de administración CRM** que controla el inventario, atiende carritos de compra y calcula rendimientos financieros mediante analítica avanzada.
+Plataforma integral en **Laravel 9** para la venta y gestión de productos del mar. Tiene una fachada pública para clientes y un panel de administración que controla catálogo, inventario, pedidos, clientes y configuración del negocio.
 
 ---
 
-## ✨ Características Principales
+## ✨ Características
 
-* **🏢 Dashboard Analítico Avanzado:** Panel de control de administrador con gráficos interactivos dinámicos y reportes financieros (Chart.js), alertas de bajo stock, y cola de despachos en tiempo real.
-* **📦 Gestión Inteligente de Inventario y Productos:** Módulo de productos con múltiples unidades de medida de entrada/salida (Ej: Compras por Tonelada, Ventas por Libra/Unidad) con cálculo automatizado gracias a factores de conversión.
-* **🏷️ Clasificación Dinámica (Categorías CRUD):** Administrador de categorías en tiempo real. Previene pérdida de datos al momento de eliminar clasificaciones, manteniendo el inventario a salvo ("Sin Categoría") y replicando cambios instantáneamente en la interfaz de clientes.
-* **🛒 E-commerce Integrado (Estilo Amazon):** Explorador de catálogo con una **Página de Detalles del Producto (PDP)** inmersiva de 3 columnas, galería visual en alta resolución, y un **Panel de Compra (Buy Box)** con control de stock métrico exacto en tiempo real.
-* **🧾 Comprobantes Electrónicos Paramétricos:** Generación de recibos con identificadores dinámicos que se nutren globalmente desde un centro de **Configuración de Negocio** manipulable directamente desde la UI.
-* **🛡️ Seguridad Activa Modulada:** Interfaz de configuración segmentada (Negocio / Seguridad) que incluye auditoría de credenciales: **alerta crítica mientras la contraseña inicial no se haya rotado** y aviso de caducidad según el plazo configurado (90 días por defecto).
-* **📊 Experiencia de Usuario (UI/UX) y Escalabilidad:** **Vistas nativas independientes para Autenticación** (Login y Registro) con validación en servidor vía Form Requests, e integración de *DataTables* para búsquedas instantáneas y paginación en el navegador.
+* **🏢 Dashboard analítico:** indicadores de productos, clientes, pedidos e ingresos, gráfico de ventas de los últimos 6 meses (Chart.js), alertas de bajo stock y pedidos recientes.
+* **📦 Inventario con unidades de medida:** cada producto define unidad de compra y de venta (Tonelada, Libra, Unidad) con factor de conversión validado; el stock se descuenta en la unidad correcta.
+* **🏷️ Catálogo:** CRUD de productos y categorías. Al eliminar una categoría sus productos quedan "Sin categoría"; un producto con pedidos no se puede borrar.
+* **🛒 E-commerce:** catálogo con filtros y búsqueda, ficha de producto en 3 columnas (galería, ficha, panel de compra) y carrito con validación de stock en servidor.
+* **🧾 Pedidos y comprobantes:** checkout transaccional con precio congelado por línea, IVA configurable, serie de comprobante y recibo imprimible con los datos del negocio.
+* **👥 Clientes y administradores:** alta y edición de clientes; gestión de cuentas de administrador con protección del último admin y de la propia cuenta.
+* **🛍️ Carritos activos:** seguimiento de carritos sin finalizar con cliente, producto, cantidad y valor estimado.
+* **⚙️ Configuración del negocio:** razón social, RUC, dirección, teléfono, leyenda, logo, IVA, umbral de bajo stock, serie de comprobante, rotación de contraseña y zona horaria.
+* **🛡️ Seguridad:** alerta crítica mientras la contraseña inicial no se rote, aviso de caducidad configurable, contraseña actual obligatoria para cambiar credenciales, correo único y bitácora de cambios de configuración.
+
+---
+
+## 🧩 Módulos del panel
+
+| Sección | Módulos |
+|---|---|
+| — | Dashboard |
+| Catálogo | Productos · Categorías · Unidades de medida |
+| Ventas | Pedidos (filtro por estado) · Clientes · Carritos |
+| Análisis | Reportes: ventas, más vendidos, bajo stock, stock por categoría |
+| Sistema | Configuración (negocio / seguridad / historial) · Administradores |
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
 * **Backend:** PHP 8, Laravel 9
-* **Frontend:** Blade Templating, Bootstrap 5.3, Vanilla CSS
-* **Base de Datos:** MySQL
-* **Librerías Adicionales:** Chart.js (Analíticas), DataTables (Tablas interactivas jQuery), FontAwesome (Iconografía).
+* **Frontend:** Blade, Bootstrap 5.3, CSS propio con tokens de diseño
+* **Base de datos:** MySQL (SQLite para desarrollo local y pruebas)
+* **Librerías:** Chart.js, DataTables, FontAwesome (vía CDN)
 
 ---
 
 ## 🚀 Requisitos e Instalación
 
-Asegúrate de contar con **PHP >= 8.0**, **Composer** y **MySQL** instalados (o un entorno local como Laragon / XAMPP).
+Necesitas **PHP >= 8.0**, **Composer** y **MySQL** (o Laragon / XAMPP).
 
-**1. Clonar el Repositorio**
+**1. Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/PescaderiaLaravel.git
+git clone https://github.com/alexandervi1/PescaderiaLaravel.git
 cd PescaderiaLaravel
 ```
 
-**2. Instalar Dependencias**
+**2. Instalar dependencias**
 ```bash
 composer install
 ```
 
-**3. Configurar Entorno**
-Duplica el archivo de configuración base y coloca tus credenciales de base de datos locales:
+**3. Configurar entorno**
 ```bash
 cp .env.example .env
-```
-> Asegúrate de crear una base de datos nueva en tu servidor local (Ej: `pescaderia_db`) y actualizar las variables `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en el archivo `.env`.
-
-**4. Generar la Clave de Aplicación**
-```bash
 php artisan key:generate
 ```
+Ajusta `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`. Para SQLite local: `DB_CONNECTION=sqlite` y `DB_DATABASE=/ruta/absoluta/database/database.sqlite`.
 
-**5. Migraciones y Seeders (Población de Datos)**
-Construir toda la estructura de la base de datos y nutrirla con datos de prueba, administradores y unidades de conversión exactas:
+**4. Migrar y poblar**
 ```bash
 php artisan migrate:fresh --seed
 ```
+Crea la estructura, el administrador inicial, las unidades de medida, las categorías y el catálogo de ejemplo.
 
-**6. Inicializar Servidor**
+**5. Iniciar el servidor**
 ```bash
 php artisan serve
 ```
-La tienda estará corriendo por defecto en: `http://localhost:8000`
+Disponible en `http://localhost:8000`.
 
 ---
 
-## 🔐 Credenciales Base (Solo Pruebas)
-
-Al correr los *Seeders* se genera automáticamente una cuenta con privilegios máximos:
+## 🔐 Credenciales base (solo pruebas)
 
 * **Rol:** Administrador
-* **Usuario:** `admin123`
+* **Usuario:** `admin123` (o el correo `maritza@gmail.com`)
 * **Contraseña:** `admin123`
 
-> [!WARNING]  
-> **Medida de Seguridad Estricta:** Al acceder con estas credenciales por primera vez, el sistema activará una **Alerta Crítica permanente** en la cabecera de todas las vistas administrativas. Esta alerta no desaparecerá hasta que modifiques el nombre de usuario y contraseña en el módulo de **Configuración > Seguridad**. Así mismo, la plataforma exigirá el cambio periódico de estas claves cada 90 días.
-
-*(Una vez logueado, haz clic en tu nombre o perfil en la tienda pública para acceder al "Panel de Control").*
+> [!WARNING]
+> Al entrar con estas credenciales aparece una **alerta crítica permanente** hasta que cambies usuario o contraseña en **Configuración → Seguridad**. El cambio exige la contraseña actual y cierra la sesión. El aviso de caducidad usa el plazo configurado (90 días por defecto).
 
 ---
 
-## 📂 Arquitectura Destacada
+## 🧪 Pruebas
 
-* Patrón MVC Riguroso (Model-View-Controller).
-* Lógica de Negocio centralizada con la directiva **Services** (`OrderService.php` para manejo transaccional).
-* Extracción y tipado de validaciones en **Form Requests** dedicados (`StoreProductoRequest`, `LoginRequest`).
-* Código analizado y calificado con políticas Zero-Trust usando Intelephense y SonarLint.
+La suite corre sobre SQLite en memoria (configurado en `phpunit.xml`), sin tocar tu base de datos de desarrollo:
 
-Desarrollado con altos estándares de codificación empresarial. 💻
+```bash
+php artisan test
+```
+
+Cubre flujo de pedidos (totales, IVA, stock, rollback), seguridad y throttling de login, gestión de administradores, unidades, carritos, filtros de pedidos, configuración, bitácora, backfill de IVA y un smoke test de las pantallas públicas y de administración.
+
+---
+
+## 🎨 Sistema visual
+
+* Un único stylesheet (`public/css/style.css`) con **tokens**: primitivos de marca, semánticos (`--color-primary`, `--color-surface`, `--color-text-muted`, estados) y puente a Bootstrap (`--bs-primary-rgb`, `--bs-info`).
+* Sin colores hex en las vistas: se usan clases (`text-brand`, `bg-brand`, `btn-brand-dark`, `stat-card-*`) o variables.
+* Contraste verificado en las 22 pantallas del panel (WCAG AA) y responsive comprobado de 320 a 1920 px, incluido iPad Pro 13" en ambas orientaciones.
+* Componentes consistentes: tarjetas con cabecera y contador, tablas con scroll propio, badges de estado con fondo tenue, objetivos táctiles de 44 px en tablet.
+
+---
+
+## 📂 Arquitectura
+
+* **MVC** con controladores delgados y lógica de negocio en servicios: `OrderService` (checkout transaccional con bloqueo de stock) y `PricingService` (única autoridad de subtotal, IVA y total).
+* **Form Requests** para validación (`StoreProductoRequest`, `UpdateAdministradorRequest`, `LoginRequest`, `RegisterRequest`…).
+* **View Composer** (`AdminLayoutComposer`) para los contadores del menú y el aviso de rotación; datos del negocio compartidos por composer.
+* **Configuración cacheada** (`Configuracion::valores()`), invalidada por eventos del modelo y memoizada por petición.
+* **Migraciones aditivas** para cambios de esquema (`iva_pct`, `configuracion_log`).
+* Modelos con reglas de dominio: `Producto::descontarStock/reponerStock`, `scopeBajoStock`, `factorConversion`.
+
+---
+
+## 📄 Documentación
+
+* Especificación de requisitos: [`documentacion/SRS_PescaderiaLaravel.tex`](documentacion/SRS_PescaderiaLaravel.tex) (compilable con `pdflatex`; hay una versión en PDF junto al `.tex`).
+* Contratos y esquemas en `contracts/` y `schemas/` pertenecen a otro producto y no aplican a esta aplicación.
+
+---
+
+## 📝 Alcance
+
+Implementado: catálogo, carrito, pedidos con comprobante, reportes, configuración, unidades, clientes, administradores y carritos activos.
+
+No implementado: pasarela de pago, facturación electrónica SRI, notificaciones por correo y CRUD sin recarga de página.
