@@ -125,7 +125,7 @@ Cubre flujo de pedidos (totales, IVA, stock, rollback), seguridad y throttling d
 
 ## 📄 Documentación
 
-* Especificación de requisitos: [`documentacion/SRS_PescaderiaLaravel.tex`](documentacion/SRS_PescaderiaLaravel.tex) (compilable con `pdflatex`; hay una versión en PDF junto al `.tex`).
+* Especificación de requisitos: [`documentacion/SRS_PescaderiaLaravel.md`](documentacion/SRS_PescaderiaLaravel.md).
 * Contratos y esquemas en `contracts/` y `schemas/` pertenecen a otro producto y no aplican a esta aplicación.
 
 ---
