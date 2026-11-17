@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Configuracion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ConfiguracionController extends Controller
 {
@@ -24,21 +25,19 @@ class ConfiguracionController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'iva_actual' => 'required|numeric|min:0|max:100',
             'negocio_nombre' => 'required|string|max:255',
             'negocio_ruc' => 'required|string|max:13',
-            'negocio_direccion' => 'required|string',
+            'negocio_direccion' => 'required|string|max:255',
             'negocio_telefono' => 'required|string|max:20',
-            'negocio_leyenda' => 'nullable|string',
+            'negocio_leyenda' => 'nullable|string|max:255',
         ]);
 
-        $campos = ['iva_actual', 'negocio_nombre', 'negocio_ruc', 'negocio_direccion', 'negocio_telefono', 'negocio_leyenda'];
-
-        foreach ($campos as $campo) {
+        foreach ($data as $clave => $valor) {
             Configuracion::updateOrCreate(
-                ['clave' => $campo],
-                ['valor' => $request->$campo]
+                ['clave' => $clave],
+                ['valor' => $valor ?? '']
             );
         }
 
@@ -51,7 +50,7 @@ class ConfiguracionController extends Controller
         /** @var \App\Models\Usuario $user */
         $user = auth()->user();
 
-        $request->validate([
+        $data = $request->validate([
             'nombre_completo' => 'required|string|max:255',
             'nombre_usuario' => 'required|string|max:255|unique:usuario,nombre_usuario,' . $user->usuario_id . ',usuario_id',
             'password' => 'nullable|string|min:8'
@@ -61,20 +60,25 @@ class ConfiguracionController extends Controller
             'nombre_completo.required' => 'El nombre completo es obligatorio.'
         ]);
 
-        $user->nombre_completo = $request->nombre_completo;
-        $user->nombre_usuario = $request->nombre_usuario;
+        // Capturar antes de guardar: getOriginal() ya devuelve el valor nuevo tras save().
+        $nombreUsuarioAnterior = $user->nombre_usuario;
 
-        if ($request->filled('password')) {
-            $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        $user->nombre_completo = $data['nombre_completo'];
+        $user->nombre_usuario = $data['nombre_usuario'];
+
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+            $user->password_changed_at = now();
         }
 
-        // Force updated_at to refresh even if only username changes or if password rotates
-        $user->touch();
         $user->save();
 
-        if ($request->filled('password') || $request->nombre_usuario !== $user->getOriginal('nombre_usuario')) {
+        if (!empty($data['password']) || $data['nombre_usuario'] !== $nombreUsuarioAnterior) {
             // Log out the user to force them to re-authenticate with new credentials
             auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
             return redirect()->route('login')->with('success', 'Credenciales actualizadas correctamente. Por favor inicie sesión nuevamente.');
         }
 

@@ -124,7 +124,7 @@
                 const nombre = this.getAttribute('data-nombre');
                 
                 // Form setup for PUT
-                formCategoria.action = `/admin/categorias/${id}`;
+                formCategoria.action = `{{ url('/admin/categorias') }}/${id}`;
                 methodContainer.innerHTML = '@method("PUT")';
                 
                 // Set data

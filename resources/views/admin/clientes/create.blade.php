@@ -69,7 +69,7 @@
                         @if(isset($cliente))
                             <small class="d-block text-muted mb-2 fst-italic">Deja vacío para mantener la actual</small>
                         @endif
-                        <input type="password" class="form-control border-warning border-opacity-50" name="password" {{ isset($cliente) ? '' : 'required' }} minlength="6" placeholder="{{ isset($cliente) ? 'Nueva contraseña...' : 'Mínimo 6 caracteres' }}">
+                        <input type="password" class="form-control border-warning border-opacity-50" name="password" {{ isset($cliente) ? '' : 'required' }} minlength="8" placeholder="{{ isset($cliente) ? 'Nueva contraseña...' : 'Mínimo 8 caracteres' }}">
                     </div>
                 </div>
             </div>

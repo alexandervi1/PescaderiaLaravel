@@ -34,7 +34,7 @@
                                 @elseif($index == 1)
                                     <i class="fas fa-medal text-secondary fa-2x" title="2do Lugar"></i>
                                 @elseif($index == 2)
-                                    <i class="fas fa-medal text-danger fa-2x" style="color: #cd7f32 !important;" title="3er Lugar"></i>
+                                    <i class="fas fa-medal fa-2x medal-bronze" title="3er Lugar"></i>
                                 @else
                                     <span class="fs-5 fw-bold text-muted">#{{ $index + 1 }}</span>
                                 @endif

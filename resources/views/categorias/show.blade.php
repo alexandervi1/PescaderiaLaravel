@@ -7,7 +7,7 @@
 <div class="text-center mb-5 mt-4" id="catalogo">
     <h2 class="fw-bold mb-4 position-relative d-inline-block pb-2">
         Categoría: {{ $categoria->nombre }}
-        <span class="position-absolute bottom-0 start-50 translate-middle-x" style="height: 3px; width: 50%; background-color: #1A519D;"></span>
+        <span class="position-absolute bottom-0 start-50 translate-middle-x bg-brand" style="height: 3px; width: 50%;"></span>
     </h2>
     <div class="d-flex justify-content-center gap-2 flex-wrap mb-4">
         <a href="{{ route('home') }}" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">Todos</a>

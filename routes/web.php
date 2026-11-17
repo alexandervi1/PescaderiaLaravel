@@ -48,8 +48,8 @@ Route::middleware(['auth', 'cliente'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD de Productos (Resource completo)
-    Route::resource('productos', AdminProductoController::class);
+    // CRUD de Productos (Resource completo, sin show: el detalle público está en /productos/{id})
+    Route::resource('productos', AdminProductoController::class)->except(['show']);
 
     // CRUD de Categorías
     Route::resource('categorias', \App\Http\Controllers\Admin\CategoriaController::class)->except(['create', 'show', 'edit']);

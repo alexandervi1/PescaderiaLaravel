@@ -2,66 +2,6 @@
 
 @section('title', 'Recibo de Compra - ' . $pedido->numero_comprobante)
 
-@push('styles')
-<style>
-    @media print {
-        .no-print, nav, footer, .btn, .mb-4.d-flex {
-            display: none !important;
-        }
-        .container {
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        .receipt-container {
-            box-shadow: none !important;
-            border: 1px solid #ddd !important;
-        }
-    }
-    .receipt-container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 40px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        font-family: 'Courier New', Courier, monospace;
-    }
-    .receipt-header {
-        border-bottom: 2px solid #333;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
-    }
-    .business-name {
-        font-size: 24px;
-        font-weight: bold;
-        color: #1A519D;
-    }
-    .receipt-title {
-        background: #f8f9fa;
-        padding: 10px;
-        border: 1px solid #ddd;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-    .table-receipt th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-    }
-    .totals-box {
-        width: 300px;
-        margin-left: auto;
-    }
-</style>
-@endpush
-
 @section('content')
 <div class="no-print text-center mb-4">
     <button onclick="window.print()" class="btn btn-primary btn-lg shadow-sm">
@@ -81,7 +21,7 @@
             </div>
         </div>
         <div class="col-4 text-center">
-            <img src="{{ asset('img/Pescaderia Don Walter logo.png') }}" alt="Logo" style="max-width: 150px;">
+            <img src="{{ asset('img/Pescaderia Don Walter logo.png') }}" alt="Logo" class="receipt-logo">
         </div>
     </div>
 
@@ -102,11 +42,11 @@
             <h6 class="fw-bold border-bottom pb-2 mb-2">DETALLES DE EMISIÓN</h6>
             <strong>Fecha:</strong> {{ $pedido->fecha_pedido->format('d/m/Y') }}<br>
             <strong>Hora:</strong> {{ $pedido->fecha_pedido->format('H:i:s') }}<br>
-            <strong>Forma Pago:</strong> Transferencia/Efectivo<br>
-            <strong>Estado:</strong> PAGADO
+            <strong>Estado:</strong> {{ mb_strtoupper($pedido->estado) }}
         </div>
     </div>
 
+    <div class="table-responsive">
     <table class="table table-bordered table-receipt small">
         <thead>
             <tr>
@@ -121,22 +61,23 @@
             <tr>
                 <td>{{ number_format($producto->pivot->cantidad, 2) }}</td>
                 <td>{{ $producto->nombre }} ({{ $producto->unidadVenta->nombre ?? 'Unidad' }})</td>
-                <td class="text-end">${{ number_format($producto->precio, 2) }}</td>
-                <td class="text-end">${{ number_format($producto->precio * $producto->pivot->cantidad, 2) }}</td>
+                <td class="text-end">${{ number_format($producto->pivot->precio_unitario, 2) }}</td>
+                <td class="text-end">${{ number_format($producto->pivot->subtotal, 2) }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    </div>
 
     <div class="row mt-4">
-        <div class="col-7">
+        <div class="col-12 col-sm-7">
             <div class="border p-2 rounded small bg-light" style="min-height: 100px;">
                 <strong>Observaciones:</strong><br>
                 {{ $negocio['leyenda'] }}<br>
                 Gracias por preferir Pescadería Don Walter. "Del mar a tu mesa".
             </div>
         </div>
-        <div class="col-5">
+        <div class="col-12 col-sm-5">
             <table class="table table-sm table-borderless fw-bold small mb-0">
                 <thead class="visually-hidden">
                     <tr>
@@ -146,16 +87,12 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>SUBTOTAL 0%:</td>
-                        <td class="text-end">$0.00</td>
+                        <td>SUBTOTAL:</td>
+                        <td class="text-end">${{ number_format($pedido->subtotal, 2) }}</td>
                     </tr>
                     <tr>
-                        <td>SUBTOTAL 15%:</td>
-                        <td class="text-end">${{ number_format($pedido->total / 1.15, 2) }}</td>
-                    </tr>
-                    <tr>
-                        <td>IVA 15%:</td>
-                        <td class="text-end">${{ number_format($pedido->total - ($pedido->total / 1.15), 2) }}</td>
+                        <td>IVA ({{ $negocio['iva_pct'] }}%):</td>
+                        <td class="text-end">${{ number_format($pedido->iva, 2) }}</td>
                     </tr>
                     <tr class="border-top table-secondary">
                         <td class="fs-6">VALOR TOTAL:</td>

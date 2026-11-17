@@ -12,9 +12,11 @@ return new class extends Migration
             $table->id('pedido_id');
             $table->unsignedBigInteger('usuario_id');
             $table->datetime('fecha_pedido')->useCurrent();
-            $table->decimal('total', 10, 2)->nullable();
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('iva', 10, 2)->default(0);
+            $table->decimal('total', 10, 2)->default(0);
 
-            $table->foreign('usuario_id')->references('usuario_id')->on('usuario')->onDelete('cascade');
+            $table->foreign('usuario_id')->references('usuario_id')->on('usuario')->onDelete('restrict');
         });
     }
 

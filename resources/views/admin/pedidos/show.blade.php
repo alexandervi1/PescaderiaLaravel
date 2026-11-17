@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-white py-3 border-bottom border-light">
-                <h6 class="mb-0 fw-bold" style="color: var(--primary-color);">Información del Cliente</h6>
+                <h6 class="mb-0 fw-bold text-brand">Información del Cliente</h6>
             </div>
             <div class="card-body">
                 <p class="mb-2"><i class="fas fa-user text-muted me-2"></i> <strong>{{ $pedido->usuario->nombre_completo ?? 'N/A' }}</strong></p>
@@ -28,7 +28,7 @@
 
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-header bg-white py-3 border-bottom border-light">
-                <h6 class="mb-0 fw-bold" style="color: var(--primary-color);">Actualizar Estado</h6>
+                <h6 class="mb-0 fw-bold text-brand">Actualizar Estado</h6>
             </div>
             <div class="card-body bg-light rounded-bottom-4">
                 <form action="{{ route('admin.pedidos.update', $pedido->pedido_id) }}" method="POST">
@@ -56,7 +56,7 @@
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom border-light">
                 <div>
-                    <h6 class="mb-1 fw-bold" style="color: var(--primary-color);">Pedido: {{ $pedido->numero_comprobante ?? 'S/N' }}</h6>
+                    <h6 class="mb-1 fw-bold text-brand">Pedido: {{ $pedido->numero_comprobante ?? 'S/N' }}</h6>
                     <small class="text-muted"><i class="far fa-calendar-alt me-1"></i>{{ $pedido->fecha_pedido->format('d/m/Y H:i') }}</small>
                 </div>
                 <div>
@@ -111,7 +111,7 @@
                         <tfoot class="bg-light">
                             <tr>
                                 <td colspan="3" class="text-end py-3 text-muted">Total a Pagar:</td>
-                                <td class="text-end pe-4 py-3 h4 fw-bold mb-0" style="color: var(--primary-color);">
+                                <td class="text-end pe-4 py-3 h4 fw-bold mb-0 text-brand">
                                     ${{ number_format($pedido->total, 2) }}
                                 </td>
                             </tr>

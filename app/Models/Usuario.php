@@ -22,12 +22,27 @@ class Usuario extends Authenticatable
         'direccion',
         'correo',
         'telefono',
+        'password_changed_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    protected $casts = [
+        'password_changed_at' => 'datetime',
+    ];
+
+    /**
+     * ¿La contraseña supera la antigüedad máxima permitida?
+     */
+    public function passwordVencida(int $dias = 90): bool
+    {
+        $desde = $this->password_changed_at ?? $this->created_at;
+
+        return $desde !== null && $desde->diffInDays(now()) >= $dias;
+    }
 
     // ── Relaciones ──
 

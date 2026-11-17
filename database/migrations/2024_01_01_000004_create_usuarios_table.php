@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('direccion', 100)->default('');
             $table->string('correo', 100)->default('');
             $table->string('telefono', 10)->nullable();
+            $table->timestamp('password_changed_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

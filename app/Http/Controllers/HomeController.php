@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index(\Illuminate\Http\Request $request)
     {
         $categorias = Categoria::all();
-        $query = Producto::with('categoria');
+        $query = Producto::with(['categoria', 'unidadVenta']);
         
         $categoria_actual = null;
         if ($request->has('categoria') && !empty($request->categoria)) {
@@ -30,7 +30,7 @@ class HomeController extends Controller
         
         if (!$request->has('categoria') && !$request->has('buscar')) {
             // Si no hay filtros, mostrar solo hasta 8 productos como antes
-            $query->take(8);
+            $query->orderBy('nombre')->take(8);
         }
         
         $productos = $query->get();

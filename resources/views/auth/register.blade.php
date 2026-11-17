@@ -9,7 +9,7 @@
             <div class="card-header border-0 text-center py-4 bg-white">
                 <img src="{{ asset('img/Pescaderia Don Walter logo.png') }}" alt="Logo" class="img-fluid mb-3" style="max-height: 80px;">
                 <hr class="mx-5">
-                <h3 class="mb-0 fw-bold" style="color: #1A519D;">Registro de Clientes</h3>
+                <h3 class="mb-0 fw-bold text-brand">Registro de Clientes</h3>
                 <hr class="mx-5">
             </div>
             <div class="card-body p-4 pt-0">
@@ -37,6 +37,11 @@
                         </div>
 
                         <div class="col-md-6">
+                            <label for="identificacion" class="form-label fw-bold">Cédula / RUC</label>
+                            <input type="text" class="form-control py-2" id="identificacion" name="identificacion" value="{{ old('identificacion') }}" required minlength="10" maxlength="13" placeholder="Ej. 1312345678" style="border-radius: 8px;">
+                        </div>
+
+                        <div class="col-md-6">
                             <label for="correo" class="form-label fw-bold">Correo Electrónico</label>
                             <input type="email" class="form-control py-2" id="correo" name="correo" value="{{ old('correo') }}" required placeholder="ejemplo@correo.com" style="border-radius: 8px;">
                         </div>
@@ -53,7 +58,7 @@
 
                         <div class="col-md-6">
                             <label for="password" class="form-label fw-bold">Contraseña</label>
-                            <input type="password" class="form-control py-2" id="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres" style="border-radius: 8px;">
+                            <input type="password" class="form-control py-2" id="password" name="password" required minlength="8" placeholder="Mínimo 8 caracteres" style="border-radius: 8px;">
                         </div>
 
                         <div class="col-md-6">
@@ -63,14 +68,14 @@
                     </div>
 
                     <div class="mt-4 text-center">
-                        <button type="submit" class="btn btn-lg px-5 text-white fw-bold shadow-sm" style="background-color: #002E5D; border-radius: 8px; transition: all 0.3s ease;">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">
                             <i class="fas fa-user-plus me-2"></i> Registrarse
                         </button>
                     </div>
                 </form>
             </div>
             <div class="card-footer bg-light text-center py-3 border-0">
-                <p class="mb-0 text-muted">¿Ya tienes cuenta? <a href="{{ route('login') }}" class="fw-bold text-decoration-none" style="color: #1A519D;">Inicia sesión aquí</a></p>
+                <p class="mb-0 text-muted">¿Ya tienes cuenta? <a href="{{ route('login') }}" class="fw-bold text-decoration-none text-brand">Inicia sesión aquí</a></p>
             </div>
         </div>
         <div class="text-center mt-3">

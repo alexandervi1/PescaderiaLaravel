@@ -12,10 +12,12 @@ return new class extends Migration
             $table->unsignedBigInteger('pedido_id');
             $table->unsignedBigInteger('producto_id');
             $table->decimal('cantidad', 10, 2);
+            $table->decimal('precio_unitario', 10, 2);
+            $table->decimal('subtotal', 10, 2);
 
             $table->primary(['pedido_id', 'producto_id']);
             $table->foreign('pedido_id')->references('pedido_id')->on('pedido')->onDelete('cascade');
-            $table->foreign('producto_id')->references('producto_id')->on('producto')->onDelete('cascade');
+            $table->foreign('producto_id')->references('producto_id')->on('producto')->onDelete('restrict');
         });
     }
 

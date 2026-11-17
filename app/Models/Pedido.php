@@ -10,9 +10,11 @@ class Pedido extends Model
     protected $primaryKey = 'pedido_id';
     public $timestamps = false;
 
-    protected $fillable = ['usuario_id', 'fecha_pedido', 'total', 'numero_comprobante', 'estado'];
+    protected $fillable = ['usuario_id', 'fecha_pedido', 'subtotal', 'iva', 'total', 'numero_comprobante', 'estado'];
 
     protected $casts = [
+        'subtotal' => 'decimal:2',
+        'iva' => 'decimal:2',
         'total' => 'decimal:2',
         'fecha_pedido' => 'datetime',
     ];
@@ -25,17 +27,6 @@ class Pedido extends Model
     public function productos()
     {
         return $this->belongsToMany(Producto::class, 'pedidoproducto', 'pedido_id', 'producto_id')
-                    ->withPivot('cantidad');
-    }
-
-    /**
-     * Calcular y actualizar el total del pedido.
-     */
-    public function calcularTotal(): void
-    {
-        $this->total = $this->productos->sum(function ($producto) {
-            return $producto->pivot->cantidad * $producto->precio;
-        });
-        $this->save();
+                    ->withPivot(['cantidad', 'precio_unitario', 'subtotal']);
     }
 }

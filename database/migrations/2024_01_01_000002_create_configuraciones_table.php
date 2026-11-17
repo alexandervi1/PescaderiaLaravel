@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('configuracion', function (Blueprint $table) {
             $table->string('clave', 50)->primary();
-            $table->string('valor', 50);
+            $table->string('valor', 255);
         });
     }
 

@@ -12,14 +12,19 @@ class ReporteController extends Controller
 {
     public function ventas()
     {
-        $ventasMes = Pedido::select(
-            DB::raw('MONTH(fecha_pedido) as mes'),
-            DB::raw('COUNT(*) as total_pedidos'),
-            DB::raw('SUM(total) as total_ingresos')
-        )
-        ->groupBy('mes')
-        ->orderBy('mes')
-        ->get();
+        $anio = (int) now()->year;
+
+        $ventasMes = Pedido::whereYear('fecha_pedido', $anio)
+            ->where('estado', '!=', 'Cancelado')
+            ->get(['fecha_pedido', 'total'])
+            ->groupBy(fn ($pedido) => $pedido->fecha_pedido->month)
+            ->sortKeys()
+            ->map(fn ($grupo, $mes) => (object) [
+                'mes' => $mes,
+                'total_pedidos' => $grupo->count(),
+                'total_ingresos' => $grupo->sum(fn ($pedido) => (float) $pedido->total),
+            ])
+            ->values();
 
         $pedidosRecientes = Pedido::with('usuario')->orderBy('fecha_pedido', 'desc')->take(10)->get();
 

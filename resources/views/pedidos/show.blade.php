@@ -16,7 +16,7 @@
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold">Productos Solicitados</h5>
-                <span class="badge bg-success text-white px-3 py-2 rounded-pill fs-6">Pagado / Procesado</span>
+                <span class="badge bg-success text-white px-3 py-2 rounded-pill fs-6">{{ $pedido->estado }}</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -39,13 +39,13 @@
                                         </div>
                                     </td>
                                     <td class="text-center text-muted">
-                                        ${{ number_format($producto->precio, 2) }}
+                                        ${{ number_format($producto->pivot->precio_unitario, 2) }}
                                     </td>
                                     <td class="text-center">
                                         {{ floor($producto->pivot->cantidad) }} {{ $producto->unidadVenta->abreviatura ?? 'u' }}
                                     </td>
                                     <td class="text-end fw-bold pe-4">
-                                        ${{ number_format($producto->precio * $producto->pivot->cantidad, 2) }}
+                                        ${{ number_format($producto->pivot->subtotal, 2) }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -75,11 +75,11 @@
                 
                 <div class="d-flex justify-content-between mb-2 text-muted">
                     <span>Subtotal:</span>
-                    <span class="fw-bold text-dark">${{ number_format($pedido->total / 1.15, 2) }}</span>
+                    <span class="fw-bold text-dark">${{ number_format($pedido->subtotal, 2) }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2 text-muted">
-                    <span>IVA (15%):</span>
-                    <span class="fw-bold text-dark">${{ number_format($pedido->total - ($pedido->total / 1.15), 2) }}</span>
+                    <span>IVA ({{ $ivaPct }}%):</span>
+                    <span class="fw-bold text-dark">${{ number_format($pedido->iva, 2) }}</span>
                 </div>
                 
                 <div class="d-flex justify-content-between mb-0 mt-3 align-items-center">

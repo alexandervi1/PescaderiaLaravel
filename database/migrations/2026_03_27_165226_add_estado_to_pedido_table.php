@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('pedido', function (Blueprint $table) {
-            //
+            $table->string('estado', 20)->default('Pendiente')->after('numero_comprobante');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('pedido', function (Blueprint $table) {
-            //
+            $table->dropColumn('estado');
         });
     }
 };

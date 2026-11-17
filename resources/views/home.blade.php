@@ -4,15 +4,15 @@
 
 @section('content')
 <!-- Hero Section -->
-<div class="row align-items-center mb-5 bg-dark text-white rounded-4 overflow-hidden shadow-lg position-relative">
+<div class="row align-items-center mb-5 hero-panel text-white rounded-4 overflow-hidden shadow-lg position-relative">
     <div class="col-md-6 p-5">
-        <h1 class="display-4 fw-bold mb-3" style="color: #7CCCED;">Del Mar a tu Mesa</h1>
+        <h1 class="display-4 fw-bold mb-3 hero-title">Del Mar a tu Mesa</h1>
         <p class="lead mb-4">Los mariscos más frescos y de la más alta calidad, entregados directo en tu puerta. 100% garantizado.</p>
         <a href="#catalogo" class="btn btn-primary btn-lg fw-bold px-4 shadow">Ver Productos <i class="fas fa-arrow-right ms-2"></i></a>
     </div>
     <div class="col-md-6 p-0 h-100 position-relative d-none d-md-block" style="min-height: 400px;">
         <img src="{{ asset('img/fondo1.jpg') }}" class="position-absolute w-100 h-100 object-fit-cover" alt="Mariscos Frescos">
-        <div class="bg-gradient-hero position-absolute w-100 h-100" style="background: linear-gradient(90deg, #212529 0%, transparent 100%);"></div>
+        <div class="bg-gradient-hero position-absolute w-100 h-100"></div>
     </div>
 </div>
 
@@ -26,7 +26,7 @@
         @else
             Nuestro Catálogo
         @endif
-        <span class="position-absolute bottom-0 start-50 translate-middle-x" style="height: 3px; width: 50%; background-color: #1A519D;"></span>
+        <span class="position-absolute bottom-0 start-50 translate-middle-x bg-brand" style="height: 3px; width: 50%;"></span>
     </h2>
     <div class="d-flex justify-content-center gap-2 flex-wrap">
         <a href="{{ route('home') }}#catalogo" class="btn {{ !isset($categoria_actual) && !request()->has('buscar') ? 'cat' : 'btn-outline-primary' }} rounded-pill px-4 shadow-sm">Todos</a>
@@ -58,7 +58,7 @@
                     <a href="{{ route('productos.show', $producto->producto_id) }}" class="text-decoration-none">
                         <h5 class="card-title fw-bold fs-5 mb-2 text-dark product-title-hover" title="{{ $producto->nombre }}">{{ $producto->nombre }}</h5>
                     </a>
-                    <p class="card-text text-muted small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 40px;">
+                    <p class="card-text text-muted small mb-3 flex-grow-1 text-truncate-2" style="min-height: 40px;">
                         {{ $producto->descripcion }}
                     </p>
                     <div class="d-flex justify-content-between align-items-baseline mt-auto">
@@ -105,13 +105,4 @@
         </div>
     @endforelse
 </div>
-
-<style>
-.product-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.product-card:hover { box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important; }
-.product-card:hover img { transform: scale(1.1); }
-.product-title-hover { transition: color 0.2s ease; }
-.product-card:hover .product-title-hover { color: #0d6efd !important; }
-.text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-</style>
 @endsection

@@ -1,18 +1,18 @@
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow" style="background-color: #1A519D;">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
     <div class="container">
         <!-- Brand / Logo -->
         <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-            <img src="{{ asset('img/Pescaderia%20Don%20Walter%20logo.png') }}" alt="Logo Pescaderia Don Walter" style="height: 64px; background-color: white; padding: 5px; border-radius: 5px;" class="me-2">
+            <img src="{{ asset('img/Pescaderia%20Don%20Walter%20logo.png') }}" alt="Logo Pescaderia Don Walter" class="me-2">
         </a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="right: 15px; top: 15px;">
+        <button class="navbar-toggler position-absolute d-lg-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="right: 15px; top: 15px;">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <!-- Search Bar -->
         <form class="d-flex mx-auto search-bar position-relative mt-3 mt-lg-0 w-100" style="max-width: 400px;" action="{{ route('home') }}" method="GET">
-            <input class="form-control me-2" type="search" name="buscar" value="{{ request('buscar') }}" placeholder="Filtrar..." aria-label="Search" style="border: 1px solid #ccc; border-radius: 5px;">
-            <button class="btn btn-outline-light d-flex align-items-center justify-content-center" type="submit" style="border: 1px solid #ccc; border-radius: 5px; width: 45px;">
-                <i class="fas fa-search text-white"></i>
+            <input class="form-control me-2" type="search" name="buscar" value="{{ request('buscar') }}" placeholder="Filtrar..." aria-label="Search">
+            <button class="btn btn-search d-flex align-items-center justify-content-center" type="submit" aria-label="Buscar">
+                <i class="fas fa-search"></i>
             </button>
         </form>
 
@@ -29,18 +29,23 @@
                         <i class="fas fa-info-circle"></i> Quiénes Somos
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('ayuda') ? 'active fw-bold' : '' }}" href="{{ route('ayuda') }}">
+                        <i class="fas fa-circle-question"></i> Ayuda
+                    </a>
+                </li>
             </ul>
 
             <!-- Menú derecho interactivo (Auth/Carrito) -->
             <ul class="navbar-nav ms-auto align-items-center">
                 @guest
                     <li class="nav-item">
-                        <a href="{{ route('login') }}" class="nav-link btn text-light px-3 me-2 border-0" style="border-radius: 8px; background-color: #7CCCED; font-weight: bold; transition: all 0.3s ease;">
+                        <a href="{{ route('login') }}" class="btn btn-brand-soft px-3 me-2 fw-bold">
                             <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="nav-link btn text-white px-3 border-0" style="border-radius: 8px; background-color: #002E5D; font-weight: bold; transition: all 0.3s ease;">
+                        <a href="{{ route('register') }}" class="btn btn-brand-dark px-3 fw-bold">
                             <i class="fas fa-user-plus me-1"></i> Registrarse
                         </a>
                     </li>
@@ -53,7 +58,7 @@
                                     $cartCount = \App\Models\Carrito::where('usuario_id', auth()->id())->sum('cantidad');
                                 @endphp
                                 @if($cartCount > 0)
-                                    <span class="badge bg-danger rounded-pill ms-1">{{ $cartCount }}</span>
+                                    <span class="badge badge-cart ms-1">{{ $cartCount }}</span>
                                 @endif
                             </a>
                         </li>

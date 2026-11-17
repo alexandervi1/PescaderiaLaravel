@@ -6,10 +6,10 @@
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-4">
     <!-- Resumen de Productos -->
     <div class="col">
-        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card" style="background: linear-gradient(135deg, #1A519D 0%, #2A6DC3 100%); color: white;">
+        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card stat-card-brand">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="text-uppercase fw-bold text-white-50 mb-0">Total Productos</h6>
+                    <h6 class="text-uppercase fw-bold stat-label mb-0">Total Productos</h6>
                     <i class="fas fa-fish fa-2x opacity-50"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalProductos }}</h2>
@@ -22,10 +22,10 @@
     
     <!-- Resumen de Clientes -->
     <div class="col">
-        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card" style="background: linear-gradient(135deg, #002e5d 0%, #104e8d 100%); color: white;">
+        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card stat-card-navy">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="text-uppercase fw-bold text-white-50 mb-0">Clientes Reales</h6>
+                    <h6 class="text-uppercase fw-bold stat-label mb-0">Clientes Reales</h6>
                     <i class="fas fa-users fa-2x opacity-50"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalClientes }}</h2>
@@ -38,10 +38,10 @@
     
     <!-- Resumen de Pedidos -->
     <div class="col">
-        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card" style="background: linear-gradient(135deg, #1A519D 0%, #002E5D 100%); color: white;">
+        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card stat-card-deep">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="text-uppercase fw-bold text-white-50 mb-0">Total Pedidos</h6>
+                    <h6 class="text-uppercase fw-bold stat-label mb-0">Total Pedidos</h6>
                     <i class="fas fa-box-open fa-2x opacity-50"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalPedidos }}</h2>
@@ -54,16 +54,16 @@
 
     <!-- Resumen de Ingresos -->
     <div class="col">
-        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card" style="background: linear-gradient(135deg, #7CCCED 0%, #A0E1FE 100%); color: #1A519D;">
+        <div class="card h-100 rounded-4 border-0 shadow-sm stat-card stat-card-sky">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="text-uppercase fw-bold mb-0 opacity-75">Ingresos Totales</h6>
+                    <h6 class="text-uppercase fw-bold stat-label mb-0">Ingresos Totales</h6>
                     <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">${{ number_format($ingresosTotales, 2) }}</h2>
             </div>
             <div class="card-footer bg-transparent border-0 pt-0 px-4 pb-4">
-                <a href="{{ route('admin.reportes.ventas') }}" class="small text-uppercase fw-bold text-decoration-none" style="color: #1A519D;"><i class="fas fa-chart-line me-1"></i> Reporte Financiero</a>
+                <a href="{{ route('admin.reportes.ventas') }}" class="small text-uppercase fw-bold text-decoration-none text-brand-strong"><i class="fas fa-chart-line me-1"></i> Reporte Financiero</a>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
                 <i class="fas fa-chart-area text-primary fs-5 me-2"></i>
-                <h6 class="mb-0 fw-bold m-0" style="color: var(--primary-color);">Tendencia de Ingresos (Últimos 6 Meses)</h6>
+                <h6 class="mb-0 fw-bold m-0 text-brand">Tendencia de Ingresos (Últimos 6 Meses)</h6>
             </div>
             <div class="card-body p-4">
                 <!-- Lienzo del Gráfico (Chart.js interactivo) -->
@@ -125,7 +125,7 @@
     <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
             <i class="fas fa-motorcycle text-warning fs-5 me-2"></i>
-            <h6 class="mb-0 fw-bold m-0" style="color: var(--primary-color);">Centro de Despacho (Pedidos Recientes)</h6>
+            <h6 class="mb-0 fw-bold m-0 text-brand">Centro de Despacho (Pedidos Recientes)</h6>
         </div>
         <a href="{{ route('admin.pedidos.index') }}" class="btn btn-sm btn-primary rounded-pill shadow-sm px-3">Administrar Todos <i class="fas fa-arrow-right ms-1"></i></a>
     </div>
@@ -193,22 +193,26 @@ document.addEventListener("DOMContentLoaded", function() {
     const labelsGrafico = JSON.parse(canvas.dataset.labels);
     const datosGrafico = JSON.parse(canvas.dataset.values);
     const ctx = canvas.getContext('2d');
+    const css = getComputedStyle(document.documentElement);
+    const brand = css.getPropertyValue('--color-primary').trim();
+    const brandRgb = css.getPropertyValue('--bs-primary-rgb').trim();
+    const surface = css.getPropertyValue('--color-surface').trim();
     
-    // Creamos un hermoso relleno de gradiente translúcido bajo la curva
+    // Relleno translúcido bajo la curva, derivado del color de marca
     let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, 'rgba(26, 81, 157, 0.4)'); /* Azul institucional */
-    gradient.addColorStop(1, 'rgba(26, 81, 157, 0.0)'); /* Se difumina a transparente */
+    gradient.addColorStop(0, `rgba(${brandRgb}, 0.4)`);
+    gradient.addColorStop(1, `rgba(${brandRgb}, 0)`);
     
     const data = {
         labels: labelsGrafico,
         datasets: [{
             label: 'Ingresos Registrados ($)',
             data: datosGrafico,
-            borderColor: '#1A519D',
+            borderColor: brand,
             backgroundColor: gradient,
             borderWidth: 3,
-            pointBackgroundColor: '#ffffff',
-            pointBorderColor: '#1A519D',
+            pointBackgroundColor: surface,
+            pointBorderColor: brand,
             pointBorderWidth: 3,
             pointRadius: 5,
             pointHoverRadius: 8,

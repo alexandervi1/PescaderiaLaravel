@@ -92,15 +92,13 @@
                     
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal ({{ collect($items)->sum('cantidad') }} items)</span>
-                        <span class="fw-bold">${{ number_format($total, 2) }}</span>
+                        <span class="fw-bold">${{ number_format($totales['subtotal'], 2) }}</span>
                     </div>
                     
-                    @php $iva_pct = \App\Models\Configuracion::obtenerIva(); @endphp
-                    @if($iva_pct > 0)
+                    @if($totales['iva_pct'] > 0)
                         <div class="d-flex justify-content-between mb-3 text-muted">
-                            <span>Impuestos (IVA {{ $iva_pct }}%)</span>
-                            <span>${{ number_format($total * ($iva_pct / 100), 2) }}</span>
-                            @php $total = $total * (1 + ($iva_pct / 100)); @endphp
+                            <span>Impuestos (IVA {{ $totales['iva_pct'] }}%)</span>
+                            <span>${{ number_format($totales['iva'], 2) }}</span>
                         </div>
                     @endif
                     
@@ -108,7 +106,7 @@
                     
                     <div class="d-flex justify-content-between mb-4 mt-2">
                         <span class="fs-5 fw-bold text-dark">Total a pagar</span>
-                        <span class="fs-4 fw-bold text-success">${{ number_format($total, 2) }}</span>
+                        <span class="fs-4 fw-bold text-success">${{ number_format($totales['total'], 2) }}</span>
                     </div>
 
                     <form action="{{ route('pedidos.procesar') }}" method="POST">

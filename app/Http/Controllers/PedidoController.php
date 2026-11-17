@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Carrito;
 use App\Models\Pedido;
-use App\Models\PedidoProducto;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
@@ -19,7 +15,9 @@ class PedidoController extends Controller
     public function show($id)
     {
         $pedido = Pedido::with(['productos.unidadVenta'])->where('usuario_id', auth()->id())->findOrFail($id);
-        return view('pedidos.show', compact('pedido'));
+        $ivaPct = \App\Models\Configuracion::obtenerIva();
+
+        return view('pedidos.show', compact('pedido', 'ivaPct'));
     }
 
     public function process(\App\Services\OrderService $orderService)
@@ -44,7 +42,8 @@ class PedidoController extends Controller
             'ruc' => \App\Models\Configuracion::obtenerValor('negocio_ruc', '1301234567001'),
             'direccion' => \App\Models\Configuracion::obtenerValor('negocio_direccion', 'Manta, Ecuador'),
             'telefono' => \App\Models\Configuracion::obtenerValor('negocio_telefono', '0999999999'),
-            'leyenda' => \App\Models\Configuracion::obtenerValor('negocio_leyenda', 'CONTRIBUYENTE RÉGIMEN RIMPE - NEGOCIO POPULAR')
+            'leyenda' => \App\Models\Configuracion::obtenerValor('negocio_leyenda', 'CONTRIBUYENTE RÉGIMEN RIMPE - NEGOCIO POPULAR'),
+            'iva_pct' => \App\Models\Configuracion::obtenerIva(),
         ];
 
         return view('pedidos.receipt', compact('pedido', 'negocio'));
