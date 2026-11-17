@@ -100,7 +100,7 @@
         
         <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
             <div class="card-body text-center p-4">
-                <i class="fas fa-shipping-fast fa-3x mb-3 text-info"></i>
+                <i class="fas fa-shipping-fast fa-3x mb-3 text-brand-soft"></i>
                 <h5>Estado de Envío</h5>
                 <p class="mb-0 opacity-75 small">Nos pondremos en contacto contigo pronto para coordinar la entrega o retiro en el local.</p>
             </div>

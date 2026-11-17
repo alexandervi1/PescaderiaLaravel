@@ -28,6 +28,7 @@
 
     /* Semánticos de estado */
     --green-600: #198754;
+    --green-700: #146C43;
     --green-50:  #E7F4EC;
     --amber-700: #B45309;
     --amber-50:  #FFF4E5;
@@ -55,7 +56,7 @@
     --color-text-muted: var(--ink-500);
     --color-text-subtle: var(--ink-300);
 
-    --color-success: var(--green-600);
+    --color-success: var(--green-700);
     --color-success-soft: var(--green-50);
     --color-success-text: #0F5132;
     --color-warning: var(--amber-700);
@@ -105,6 +106,7 @@
     --bs-body-bg: var(--color-page);
     --bs-border-color: var(--color-border);
     --bs-secondary-color: var(--color-text-muted);
+    --bs-secondary-rgb: 97, 110, 124;
     --bs-secondary-bg: var(--color-surface-alt);
     --bs-tertiary-bg: var(--color-surface-alt);
     --bs-heading-color: var(--color-text);
@@ -117,7 +119,7 @@
     --bs-info: var(--color-info);
     --bs-info-rgb: 14, 124, 134;
     --bs-success: var(--color-success);
-    --bs-success-rgb: 25, 135, 84;
+    --bs-success-rgb: 20, 108, 67;
     --bs-danger: var(--color-danger);
     --bs-danger-rgb: 220, 53, 69;
     --bs-warning: var(--color-warning);
@@ -162,7 +164,7 @@ hr {
 }
 
 ::placeholder {
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
     opacity: 1;
 }
 
@@ -299,6 +301,11 @@ hr {
     color: var(--color-on-primary);
 }
 
+/* Botones del menú: fondo transparente por defecto, para que .active pueda pintarlo */
+.sidebar button.nav-link {
+    background-color: transparent;
+}
+
 /* ── 7. Botones ──────────────────────────────────────────────────────────── */
 .btn {
     border-radius: var(--radius-sm);
@@ -334,6 +341,15 @@ hr {
     --bs-btn-active-bg: var(--color-primary-strong);
     --bs-btn-active-border-color: var(--color-primary-strong);
     --bs-btn-focus-shadow-rgb: 42, 109, 195;
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--color-text-muted);
+    --bs-btn-border-color: var(--color-border-strong);
+    --bs-btn-hover-bg: var(--color-text-muted);
+    --bs-btn-hover-border-color: var(--color-text-muted);
+    --bs-btn-active-bg: var(--ink-700);
+    --bs-btn-active-border-color: var(--ink-700);
 }
 
 .btn-brand-soft {
@@ -439,8 +455,16 @@ hr {
 .stat-card-deep  { background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-900) 100%); color: var(--white); }
 .stat-card-sky   { background: linear-gradient(135deg, var(--brand-300) 0%, var(--brand-100) 100%); color: var(--brand-900); }
 
-.stat-card .stat-label { color: rgba(255, 255, 255, 0.82); }
+.stat-card .stat-label { color: rgba(255, 255, 255, 0.95); }
 .stat-card-sky .stat-label { color: var(--brand-800); }
+
+/* Los números heredan el color de la tarjeta, no el color global de encabezados */
+.stat-card h1,
+.stat-card h2,
+.stat-card h3,
+.stat-card h4 {
+    color: inherit;
+}
 
 /* ── 9. Tablas ───────────────────────────────────────────────────────────── */
 .table {
@@ -480,7 +504,15 @@ hr {
     border-radius: var(--radius-sm);
     color: var(--color-text);
     background-color: var(--color-surface);
+    font-size: var(--text-md);
+}
+
+.form-control {
     padding: 0.6rem 0.85rem;
+}
+
+.form-select {
+    padding: 0.6rem 2.25rem 0.6rem 0.85rem;
 }
 
 .form-control:focus,
@@ -514,6 +546,27 @@ hr {
 .badge {
     font-weight: 600;
     letter-spacing: 0.01em;
+}
+
+/* Badges de estado: fondo tenue + texto oscuro del mismo tono (contraste AA) */
+.badge.bg-success {
+    background-color: var(--color-success-soft) !important;
+    color: var(--color-success-text) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--color-danger-soft) !important;
+    color: var(--color-danger-text) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--color-warning-soft) !important;
+    color: var(--color-warning-text) !important;
+}
+
+.badge.bg-info {
+    background-color: var(--color-info-soft) !important;
+    color: var(--color-info-text) !important;
 }
 
 .badge-status {
@@ -756,12 +809,7 @@ div.dataTables_wrapper .paginate_button.current {
 .input-group .form-control,
 .input-group .form-select,
 .input-group-text {
-    min-height: 42px;
-}
-
-.form-select {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    min-height: 45px;
 }
 
 .medal-bronze {

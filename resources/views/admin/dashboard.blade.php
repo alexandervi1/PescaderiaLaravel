@@ -10,7 +10,7 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="text-uppercase fw-bold stat-label mb-0">Total Productos</h6>
-                    <i class="fas fa-fish fa-2x opacity-50"></i>
+                    <i class="fas fa-fish fa-2x opacity-75"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalProductos }}</h2>
             </div>
@@ -26,7 +26,7 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="text-uppercase fw-bold stat-label mb-0">Clientes Reales</h6>
-                    <i class="fas fa-users fa-2x opacity-50"></i>
+                    <i class="fas fa-users fa-2x opacity-75"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalClientes }}</h2>
             </div>
@@ -42,7 +42,7 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="text-uppercase fw-bold stat-label mb-0">Total Pedidos</h6>
-                    <i class="fas fa-box-open fa-2x opacity-50"></i>
+                    <i class="fas fa-box-open fa-2x opacity-75"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">{{ $totalPedidos }}</h2>
             </div>
@@ -58,7 +58,7 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="text-uppercase fw-bold stat-label mb-0">Ingresos Totales</h6>
-                    <i class="fas fa-dollar-sign fa-2x opacity-50"></i>
+                    <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
                 </div>
                 <h2 class="display-5 fw-bold mb-0">${{ number_format($ingresosTotales, 2) }}</h2>
             </div>
@@ -109,7 +109,7 @@
                         </div>
                     @empty
                         <div class="text-center py-5">
-                            <i class="fas fa-check-circle fa-4x text-success mb-3 opacity-50"></i>
+                            <i class="fas fa-check-circle fa-4x text-success mb-3 opacity-75"></i>
                             <h6 class="text-muted fw-bold">Inventario Saludable</h6>
                             <p class="small text-muted mb-0 px-4">Ningún producto de la tienda está por debajo de las 50 unidades requeridas.</p>
                         </div>

@@ -9,15 +9,16 @@
 @endsection
 
 @section('content')
-<div class="card shadow-sm border-0 rounded-4">
-    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-bold"><i class="fas fa-tags text-primary me-2"></i> Listado de Categorías</h5>
+        <span class="badge bg-light text-muted fw-normal">{{ $categorias->count() }} {{ \Illuminate\Support\Str::plural('registro', $categorias->count()) }}</span>
     </div>
     
-    <div class="card-body p-0">
-        <div class="table-responsive p-4">
-            <table class="table table-hover align-middle table-borderless datatable">
-                <thead class="bg-light">
+    <div class="card-body p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 datatable">
+                <thead class="table-light">
                     <tr>
                         <th class="rounded-start">ID</th>
                         <th>Nombre de Categoría</th>
@@ -26,7 +27,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($categorias as $cat)
+                    @forelse($categorias as $cat)
                     <tr>
                         <td class="fw-bold text-secondary">#{{ str_pad($cat->categoria_id, 3, '0', STR_PAD_LEFT) }}</td>
                         <td>
@@ -58,7 +59,14 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <i class="fas fa-tags fa-3x text-muted mb-3 opacity-50"></i>
+                                <h5 class="text-muted">No hay categorías registradas.</h5>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -80,7 +88,7 @@
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label for="nombre" class="form-label fw-bold">Nombre de la Categoría *</label>
-                        <input type="text" class="form-control form-control-lg bg-light" id="nombre" name="nombre" required placeholder="Ej. Mariscos Frescos" autofocus>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required placeholder="Ej. Mariscos Frescos" autofocus>
                         <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i> Esta categoría aparecerá visible públicamente en la barra lateral del catálogo.</div>
                     </div>
                 </div>

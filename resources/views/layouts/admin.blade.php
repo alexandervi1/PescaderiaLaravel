@@ -71,7 +71,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link rounded dropdown-toggle d-flex align-items-center justify-content-between w-100 border-0 bg-transparent {{ request()->routeIs('admin.reportes.*') ? 'active' : 'text-dark' }}" data-bs-toggle="collapse" data-bs-target="#reportesMenu" aria-expanded="{{ request()->routeIs('admin.reportes.*') ? 'true' : 'false' }}" aria-controls="reportesMenu">
+                            <button class="nav-link rounded dropdown-toggle d-flex align-items-center justify-content-between w-100 border-0 {{ request()->routeIs('admin.reportes.*') ? 'active' : 'text-dark' }}" data-bs-toggle="collapse" data-bs-target="#reportesMenu" aria-expanded="{{ request()->routeIs('admin.reportes.*') ? 'true' : 'false' }}" aria-controls="reportesMenu">
                                 <span><i class="fas fa-chart-line fa-fw me-2"></i> Reportes</span>
                             </button>
                             <div class="collapse overflow-hidden {{ request()->routeIs('admin.reportes.*') ? 'show' : '' }}" id="reportesMenu">

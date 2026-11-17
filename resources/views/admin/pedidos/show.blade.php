@@ -36,7 +36,7 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted text-uppercase">Estado Actual</label>
-                        <select name="estado" class="form-select border-0 shadow-sm">
+                        <select name="estado" class="form-select">
                             <option value="Pendiente" {{ $pedido->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
                             <option value="Enviado" {{ $pedido->estado == 'Enviado' ? 'selected' : '' }}>Enviado</option>
                             <option value="Entregado" {{ $pedido->estado == 'Entregado' ? 'selected' : '' }}>Entregado</option>

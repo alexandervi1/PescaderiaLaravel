@@ -4,6 +4,10 @@
 
 @section('content')
 <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-box-open text-primary me-2"></i> Pedidos Recibidos</h5>
+        <span class="badge bg-light text-muted fw-normal">{{ $pedidos->count() }} {{ \Illuminate\Support\Str::plural('registro', $pedidos->count()) }}</span>
+    </div>
     <div class="card-body p-4">
         <div class="table-responsive">
             <table class="table table-hover align-middle datatable">
@@ -18,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($pedidos as $pedido)
+                    @forelse($pedidos as $pedido)
                     <tr>
                         <td class="fw-bold">{{ $pedido->numero_comprobante ?? 'N/A' }}</td>
                         <td>{{ $pedido->fecha_pedido->format('d/m/Y H:i') }}</td>
@@ -41,7 +45,14 @@
                             </a>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3 opacity-50"></i>
+                                <h5 class="text-muted">Todavía no hay pedidos registrados.</h5>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

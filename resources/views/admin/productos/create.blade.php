@@ -90,7 +90,7 @@
                     <label for="precio" class="form-label fw-bold d-block text-success">Precio (x Un. Venta) *</label>
                      <div class="input-group">
                         <span class="input-group-text bg-success text-white"><i class="fas fa-dollar-sign"></i></span>
-                        <input type="number" step="0.01" min="0" class="form-control border-success" id="precio" name="precio" value="{{ old('precio', $producto->precio ?? '') }}" required placeholder="0.00">
+                        <input type="number" step="0.01" min="0" class="form-control" id="precio" name="precio" value="{{ old('precio', $producto->precio ?? '') }}" required placeholder="0.00">
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                 @endif
                 <div class="col-md-{{ isset($producto) && $producto->imagen_url ? '10' : '12' }}">
                     <label for="imagen" class="form-label fw-bold">{{ isset($producto) ? 'Cambiar Imagen (Opcional)' : 'Subir Imagen' }}</label>
-                    <input class="form-control form-control-lg" type="file" id="imagen" name="imagen" accept=".jpg,.jpeg,.png,.gif">
+                    <input class="form-control" type="file" id="imagen" name="imagen" accept=".jpg,.jpeg,.png,.gif">
                     <div class="form-text mt-2"><i class="fas fa-info-circle me-1"></i> Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 2MB. Una imagen clara ayuda a las ventas.</div>
                 </div>
             </div>
