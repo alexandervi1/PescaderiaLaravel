@@ -179,4 +179,20 @@ class OrderFlowTest extends TestCase
             'cantidad' => 2,
         ]);
     }
+
+    public function test_order_uses_the_configured_receipt_series(): void
+    {
+        Configuracion::updateOrCreate(['clave' => 'comprobante_serie'], ['valor' => '002-002']);
+
+        $producto = $this->producto();
+        Carrito::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'producto_id' => $producto->producto_id,
+            'cantidad' => 1,
+        ]);
+
+        $pedido = app(OrderService::class)->processOrder($this->cliente);
+
+        $this->assertStringStartsWith('002-002-', $pedido->numero_comprobante);
+    }
 }

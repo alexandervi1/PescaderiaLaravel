@@ -87,7 +87,7 @@ class ProductoController extends Controller
     private function guardarImagen(Request $request): string
     {
         $file = $request->file('imagen');
-        $filename = Str::uuid() . '.' . strtolower($file->getClientOriginalExtension());
+        $filename = Str::uuid() . '.' . strtolower($file->extension());
         $file->move(public_path('img/productos'), $filename);
 
         return 'img/productos/' . $filename;

@@ -30,7 +30,7 @@
         @elseif(auth()->user()->passwordVencida())
             <div class="alert alert-warning rounded-0 border-0 m-0 text-center shadow-sm text-dark" style="z-index: 1050; position: relative;" role="alert">
                 <i class="fas fa-history fa-lg me-2"></i>
-                <strong>Aviso de Seguridad:</strong> Su contraseña actual tiene 90 días o más de antigüedad. Por políticas de seguridad, <a href="{{ route('admin.configuracion.edit') }}#seguridad" class="alert-link text-dark text-decoration-underline">le sugerimos actualizarla aquí</a>.
+                <strong>Aviso de Seguridad:</strong> Su contraseña actual tiene {{ $passwordRotationDays }} días o más de antigüedad. Por políticas de seguridad, <a href="{{ route('admin.configuracion.edit') }}#seguridad" class="alert-link text-dark text-decoration-underline">le sugerimos actualizarla aquí</a>.
             </div>
         @endif
     @endif

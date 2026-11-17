@@ -16,19 +16,37 @@ class Configuracion extends Model
     protected $fillable = ['clave', 'valor'];
 
     /**
+     * Memo por petición: evita una lectura de caché por cada clave consultada.
+     *
+     * @var array<string, string|null>|null
+     */
+    private static ?array $memoria = null;
+
+    protected static function booted()
+    {
+        static::saved(fn () => self::flush());
+        static::deleted(fn () => self::flush());
+    }
+
+    /**
      * Todos los valores en una sola consulta cacheada.
      *
      * @return array<string, string|null>
      */
     public static function valores(): array
     {
-        return Cache::rememberForever('configuracion', function () {
+        if (self::$memoria !== null) {
+            return self::$memoria;
+        }
+
+        return self::$memoria = Cache::rememberForever('configuracion', function () {
             return self::query()->pluck('valor', 'clave')->all();
         });
     }
 
     public static function flush(): void
     {
+        self::$memoria = null;
         Cache::forget('configuracion');
     }
 

@@ -49,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
                 date_default_timezone_set($zona);
                 config(['app.timezone' => $zona]);
             }
-        } catch (\Throwable $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             // Base de datos no disponible todavía.
         }
     }
@@ -68,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
                 'leyenda' => (string) Configuracion::obtenerValor('negocio_leyenda', ''),
                 'logo' => Configuracion::obtenerLogo(),
             ];
-        } catch (\Throwable $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             return [
                 'nombre' => 'Pescadería Don Walter',
                 'ruc' => '',

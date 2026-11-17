@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Configuracion;
 use App\Models\ConfiguracionLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -76,16 +77,18 @@ class ConfiguracionController extends Controller
             $data['negocio_logo'] = $this->guardarLogo($logo);
         }
 
-        foreach ($data as $clave => $valor) {
-            $anterior = Configuracion::obtenerValor($clave);
-            $nuevo = $valor ?? '';
+        DB::transaction(function () use ($data) {
+            foreach ($data as $clave => $valor) {
+                $anterior = Configuracion::obtenerValor($clave);
+                $nuevo = $valor ?? '';
 
-            Configuracion::updateOrCreate(['clave' => $clave], ['valor' => $nuevo]);
+                Configuracion::updateOrCreate(['clave' => $clave], ['valor' => $nuevo]);
 
-            if ((string) $anterior !== (string) $nuevo) {
-                $this->registrar($clave, $anterior, $nuevo);
+                if ((string) $anterior !== (string) $nuevo) {
+                    $this->registrar($clave, $anterior, $nuevo);
+                }
             }
-        }
+        });
 
         Configuracion::flush();
 
@@ -114,14 +117,20 @@ class ConfiguracionController extends Controller
 
         $nombreUsuarioAnterior = $user->nombre_usuario;
         $correoAnterior = $user->correo;
+        $passwordCambiada = !empty($data['password']);
 
         $user->nombre_completo = $data['nombre_completo'];
         $user->nombre_usuario = $data['nombre_usuario'];
         $user->correo = $data['correo'];
 
-        if (!empty($data['password'])) {
+        if ($passwordCambiada) {
             $user->password = Hash::make($data['password']);
             $user->password_changed_at = now();
+        }
+
+        $user->save();
+
+        if ($passwordCambiada) {
             $this->registrar('password', null, 'actualizada');
         }
 
@@ -133,9 +142,7 @@ class ConfiguracionController extends Controller
             $this->registrar('correo', $correoAnterior, $user->correo);
         }
 
-        $user->save();
-
-        if (!empty($data['password']) || $data['nombre_usuario'] !== $nombreUsuarioAnterior) {
+        if ($passwordCambiada || $data['nombre_usuario'] !== $nombreUsuarioAnterior) {
             auth()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -149,7 +156,7 @@ class ConfiguracionController extends Controller
 
     private function guardarLogo($file): string
     {
-        $filename = Str::uuid() . '.' . strtolower($file->getClientOriginalExtension());
+        $filename = Str::uuid() . '.' . strtolower($file->extension());
         $file->move(public_path('img/negocio'), $filename);
 
         $anterior = Configuracion::obtenerLogo();
@@ -181,8 +188,8 @@ class ConfiguracionController extends Controller
         ConfiguracionLog::create([
             'usuario_id' => auth()->id(),
             'clave' => $clave,
-            'valor_anterior' => $anterior === null ? null : Str::limit((string) $anterior, 250),
-            'valor_nuevo' => $nuevo === null ? null : Str::limit((string) $nuevo, 250),
+            'valor_anterior' => $anterior === null ? null : (string) $anterior,
+            'valor_nuevo' => $nuevo === null ? null : (string) $nuevo,
         ]);
     }
 }

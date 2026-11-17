@@ -145,6 +145,37 @@ class AdminManagementTest extends TestCase
         ]);
     }
 
+    public function test_admin_self_password_change_requires_current_password(): void
+    {
+        $this->actingAs($this->admin)
+            ->put(route('admin.administradores.update', $this->admin->usuario_id), [
+                'nombre_completo' => 'Admin Uno',
+                'nombre_usuario' => 'admin1',
+                'correo' => 'admin1@example.com',
+                'direccion' => 'Calle 1',
+                'password' => 'nuevaClave123',
+            ])
+            ->assertSessionHasErrors('current_password');
+
+        $this->assertTrue(Hash::check('secret123', $this->admin->fresh()->password));
+    }
+
+    public function test_admin_self_password_change_succeeds_with_current_password(): void
+    {
+        $this->actingAs($this->admin)
+            ->put(route('admin.administradores.update', $this->admin->usuario_id), [
+                'nombre_completo' => 'Admin Uno',
+                'nombre_usuario' => 'admin1',
+                'correo' => 'admin1@example.com',
+                'direccion' => 'Calle 1',
+                'current_password' => 'secret123',
+                'password' => 'nuevaClave123',
+            ])
+            ->assertRedirect(route('admin.administradores.index'));
+
+        $this->assertTrue(Hash::check('nuevaClave123', $this->admin->fresh()->password));
+    }
+
     public function test_administrator_cannot_delete_self(): void
     {
         $this->actingAs($this->admin)

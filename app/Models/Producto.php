@@ -106,6 +106,14 @@ class Producto extends Model
     }
 
     /**
+     * Productos por debajo del umbral configurado de bajo stock.
+     */
+    public function scopeBajoStock($query)
+    {
+        return $query->whereRaw('(stock * factor_conversion) < ?', [Configuracion::obtenerUmbralBajoStock()]);
+    }
+
+    /**
      * Factor de conversión entre la unidad de compra y la de venta.
      * Devuelve null cuando la combinación no está soportada.
      */

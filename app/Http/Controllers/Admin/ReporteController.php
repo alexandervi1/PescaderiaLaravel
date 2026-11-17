@@ -47,9 +47,9 @@ class ReporteController extends Controller
     {
         $umbral = \App\Models\Configuracion::obtenerUmbralBajoStock();
 
-        $productos = Producto::whereRaw('(stock * factor_conversion) < ?', [$umbral])->get();
+        $productos = Producto::bajoStock()->get();
 
-        return view('admin.reportes.bajo_stock', compact('productos'));
+        return view('admin.reportes.bajo_stock', compact('productos', 'umbral'));
     }
 
     public function stockPorCategoria()

@@ -111,7 +111,7 @@
                         <div class="text-center py-5">
                             <i class="fas fa-check-circle fa-4x text-success mb-3 opacity-75"></i>
                             <h6 class="text-muted fw-bold">Inventario Saludable</h6>
-                            <p class="small text-muted mb-0 px-4">Ningún producto de la tienda está por debajo de las 50 unidades requeridas.</p>
+                            <p class="small text-muted mb-0 px-4">Ningún producto de la tienda está por debajo de las {{ $umbral }} unidades requeridas.</p>
                         </div>
                     @endforelse
                 </div>

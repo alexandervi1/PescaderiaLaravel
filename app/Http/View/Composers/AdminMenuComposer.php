@@ -16,7 +16,8 @@ class AdminMenuComposer
     {
         $view->with([
             'pendingOrders' => Pedido::where('estado', 'Pendiente')->count(),
-            'lowStockCount' => Producto::whereRaw('(stock * factor_conversion) < ?', [Configuracion::obtenerUmbralBajoStock()])->count(),
+            'lowStockCount' => Producto::bajoStock()->count(),
+            'passwordRotationDays' => Configuracion::obtenerRotacionDias(),
         ]);
     }
 }

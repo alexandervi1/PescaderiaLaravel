@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Configuracion;
 use App\Models\Producto;
 use App\Models\Usuario;
 use App\Models\Pedido;
@@ -25,10 +26,10 @@ class DashboardController extends Controller
             ->get();
 
         // 3. Productos Críticos con Bajo Stock (umbral configurable)
-        $umbral = \App\Models\Configuracion::obtenerUmbralBajoStock();
+        $umbral = Configuracion::obtenerUmbralBajoStock();
 
         $productosBajoStock = Producto::with(['categoria', 'unidadVenta'])
-            ->whereRaw('(stock * factor_conversion) < ?', [$umbral])
+            ->bajoStock()
             ->take(5)
             ->get();
 
@@ -59,7 +60,7 @@ class DashboardController extends Controller
 
         return view('admin.dashboard', compact(
             'totalProductos', 'totalClientes', 'totalPedidos', 'ingresosTotales',
-            'pedidosRecientes', 'productosBajoStock', 'labelsGrafico', 'datosGrafico'
+            'pedidosRecientes', 'productosBajoStock', 'labelsGrafico', 'datosGrafico', 'umbral'
         ));
     }
 }

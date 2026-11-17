@@ -416,4 +416,13 @@ class AdminFixesTest extends TestCase
             'valor_nuevo' => '12',
         ]);
     }
+
+    public function test_configuration_cache_is_invalidated_on_save(): void
+    {
+        Configuracion::updateOrCreate(['clave' => 'iva_actual'], ['valor' => '15']);
+        $this->assertEquals(15.0, Configuracion::obtenerIva());
+
+        Configuracion::updateOrCreate(['clave' => 'iva_actual'], ['valor' => '20']);
+        $this->assertEquals(20.0, Configuracion::obtenerIva());
+    }
 }

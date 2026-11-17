@@ -27,7 +27,7 @@ class AdministradorController extends Controller
         $data = $request->validate([
             'nombre_completo' => 'required|string|max:255',
             'nombre_usuario' => 'required|string|max:255|unique:usuario,nombre_usuario',
-            'correo' => 'required|email|max:100',
+            'correo' => 'required|email|max:100|unique:usuario,correo',
             'telefono' => 'nullable|string|max:10',
             'direccion' => 'required|string|max:100',
             'password' => 'required|string|min:8',
@@ -59,13 +59,22 @@ class AdministradorController extends Controller
     {
         $this->soloAdmin($administrador);
 
-        $data = $request->validate([
+        $rules = [
             'nombre_completo' => 'required|string|max:255',
             'nombre_usuario' => 'required|string|max:255|unique:usuario,nombre_usuario,' . $administrador->usuario_id . ',usuario_id',
-            'correo' => 'required|email|max:100',
+            'correo' => 'required|email|max:100|unique:usuario,correo,' . $administrador->usuario_id . ',usuario_id',
             'telefono' => 'nullable|string|max:10',
             'direccion' => 'required|string|max:100',
             'password' => 'nullable|string|min:8',
+        ];
+
+        // Cambiar la propia contraseña exige confirmar la actual, igual que en Configuración.
+        if ($administrador->usuario_id === auth()->id() && $request->filled('password')) {
+            $rules['current_password'] = 'required|current_password';
+        }
+
+        $data = $request->validate($rules, [
+            'current_password.current_password' => 'La contraseña actual no es correcta.',
         ]);
 
         $cambios = [

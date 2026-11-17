@@ -14,14 +14,14 @@
     <div class="text-center py-5">
         <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
         <h3 class="fw-bold text-dark">Inventario Saludable</h3>
-        <p class="text-muted">Actualmente ningún producto se encuentra por debajo del umbral mínimo (50 unidades de venta).</p>
+        <p class="text-muted">Actualmente ningún producto se encuentra por debajo del umbral mínimo ({{ $umbral }} unidades de venta).</p>
     </div>
 @else
     <div class="alert alert-danger px-4 py-3 d-flex align-items-center mb-4 rounded-4 shadow-sm">
         <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
         <div>
             <h5 class="alert-heading fw-bold mb-1">¡Atención requerida!</h5>
-            <p class="mb-0">Los siguientes <strong>{{ $productos->count() }}</strong> productos están por agotarse (menos de 50 u. disponibles para la venta).</p>
+            <p class="mb-0">Los siguientes <strong>{{ $productos->count() }}</strong> productos están por agotarse (menos de {{ $umbral }} u. disponibles para la venta).</p>
         </div>
     </div>
 
