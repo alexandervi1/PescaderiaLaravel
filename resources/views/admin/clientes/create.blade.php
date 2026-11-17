@@ -11,7 +11,7 @@
 @section('content')
 <div class="card border-0 shadow-sm rounded-4 max-w-4xl mx-auto">
     <div class="card-header bg-white py-3 border-bottom">
-        <h5 class="mb-0 fw-bold"><i class="fas fa-user-edit text-success me-2"></i> {{ isset($cliente) ? 'Actualizar Ficha de Cliente' : 'Registrar Nuevo Cliente' }}</h5>
+        <h5 class="mb-0 fw-bold"><i class="fas fa-user-edit text-primary me-2"></i> {{ isset($cliente) ? 'Actualizar Ficha de Cliente' : 'Registrar Nuevo Cliente' }}</h5>
     </div>
     <div class="card-body p-4 p-md-5">
         <form action="{{ isset($cliente) ? route('admin.clientes.update', $cliente->usuario_id) : route('admin.clientes.store') }}" method="POST">
@@ -75,7 +75,7 @@
             </div>
 
             <div class="text-end pt-4 mt-4">
-                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow">
+                <button type="submit" class="btn btn-primary btn-lg px-5 fw-bold shadow">
                     <i class="fas fa-save me-2"></i> {{ isset($cliente) ? 'Guardar Cambios' : 'Registrar Cliente' }}
                 </button>
             </div>

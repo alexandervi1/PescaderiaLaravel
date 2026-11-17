@@ -199,7 +199,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end mt-5 pt-3 border-top">
-                                <button type="submit" class="btn btn-dark btn-lg fw-bold shadow-sm rounded-pill px-5">
+                                <button type="submit" class="btn btn-brand-dark btn-lg fw-bold shadow-sm rounded-pill px-5">
                                     Actualizar Seguridad <i class="fas fa-lock ms-2"></i>
                                 </button>
                             </div>

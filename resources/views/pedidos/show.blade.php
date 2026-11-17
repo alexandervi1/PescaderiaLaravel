@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="{{ route('pedidos.receipt', $pedido->pedido_id) }}" target="_blank" class="btn btn-dark w-100 py-2 fw-bold">
+                    <a href="{{ route('pedidos.receipt', $pedido->pedido_id) }}" target="_blank" class="btn btn-brand-dark w-100 py-2 fw-bold">
                         <i class="fas fa-file-invoice me-2"></i> Ver Recibo / Imprimir
                     </a>
                 </div>
