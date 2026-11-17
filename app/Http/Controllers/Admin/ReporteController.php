@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Categoria;
+use App\Models\Configuracion;
 use App\Models\Pedido;
 use App\Models\Producto;
-use App\Models\Categoria;
 use Illuminate\Support\Facades\DB;
 
 class ReporteController extends Controller
@@ -45,7 +46,7 @@ class ReporteController extends Controller
 
     public function bajoStock()
     {
-        $umbral = \App\Models\Configuracion::obtenerUmbralBajoStock();
+        $umbral = Configuracion::obtenerUmbralBajoStock();
 
         $productos = Producto::bajoStock()->get();
 

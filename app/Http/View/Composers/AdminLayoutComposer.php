@@ -8,9 +8,9 @@ use App\Models\Producto;
 use Illuminate\View\View;
 
 /**
- * Contadores operativos que alimentan los badges del menú de administración.
+ * Datos del layout de administración: contadores del menú y aviso de rotación.
  */
-class AdminMenuComposer
+class AdminLayoutComposer
 {
     public function compose(View $view): void
     {

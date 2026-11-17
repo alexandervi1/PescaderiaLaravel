@@ -13,9 +13,7 @@ class CarritoController extends Controller
             ->orderBy('fecha_agregado', 'desc')
             ->get();
 
-        $valorTotal = $carritos->sum(fn ($item) => $item->producto
-            ? $item->cantidad * (float) $item->producto->precio
-            : 0);
+        $valorTotal = $carritos->sum(fn ($item) => $item->subtotal);
 
         return view('admin.carritos.index', compact('carritos', 'valorTotal'));
     }

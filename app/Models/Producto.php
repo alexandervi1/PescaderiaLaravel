@@ -108,7 +108,7 @@ class Producto extends Model
     /**
      * Productos por debajo del umbral configurado de bajo stock.
      */
-    public function scopeBajoStock($query)
+    public function scopeBajoStock($query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->whereRaw('(stock * factor_conversion) < ?', [Configuracion::obtenerUmbralBajoStock()]);
     }

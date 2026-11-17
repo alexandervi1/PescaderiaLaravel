@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreAdministradorRequest;
+use App\Http\Requests\Admin\UpdateAdministradorRequest;
+use App\Models\ConfiguracionLog;
 use App\Models\Usuario;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -22,16 +25,9 @@ class AdministradorController extends Controller
         return view('admin.administradores.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreAdministradorRequest $request)
     {
-        $data = $request->validate([
-            'nombre_completo' => 'required|string|max:255',
-            'nombre_usuario' => 'required|string|max:255|unique:usuario,nombre_usuario',
-            'correo' => 'required|email|max:100|unique:usuario,correo',
-            'telefono' => 'nullable|string|max:10',
-            'direccion' => 'required|string|max:100',
-            'password' => 'required|string|min:8',
-        ]);
+        $data = $request->validated();
 
         Usuario::create([
             'nombre_usuario' => $data['nombre_usuario'],
@@ -55,27 +51,14 @@ class AdministradorController extends Controller
         return view('admin.administradores.create', compact('administrador'));
     }
 
-    public function update(Request $request, Usuario $administrador)
+    public function update(UpdateAdministradorRequest $request, Usuario $administrador)
     {
         $this->soloAdmin($administrador);
 
-        $rules = [
-            'nombre_completo' => 'required|string|max:255',
-            'nombre_usuario' => 'required|string|max:255|unique:usuario,nombre_usuario,' . $administrador->usuario_id . ',usuario_id',
-            'correo' => 'required|email|max:100|unique:usuario,correo,' . $administrador->usuario_id . ',usuario_id',
-            'telefono' => 'nullable|string|max:10',
-            'direccion' => 'required|string|max:100',
-            'password' => 'nullable|string|min:8',
-        ];
-
-        // Cambiar la propia contraseña exige confirmar la actual, igual que en Configuración.
-        if ($administrador->usuario_id === auth()->id() && $request->filled('password')) {
-            $rules['current_password'] = 'required|current_password';
-        }
-
-        $data = $request->validate($rules, [
-            'current_password.current_password' => 'La contraseña actual no es correcta.',
-        ]);
+        $data = $request->validated();
+        $esPropio = $administrador->usuario_id === auth()->id();
+        $passwordCambiada = !empty($data['password']);
+        $usuarioAnterior = $administrador->nombre_usuario;
 
         $cambios = [
             'nombre_completo' => $data['nombre_completo'],
@@ -85,12 +68,30 @@ class AdministradorController extends Controller
             'direccion' => $data['direccion'],
         ];
 
-        if (!empty($data['password'])) {
+        if ($passwordCambiada) {
             $cambios['password'] = Hash::make($data['password']);
             $cambios['password_changed_at'] = now();
         }
 
         $administrador->update($cambios);
+
+        // Igual que en Configuración: cambiar credenciales propias deja rastro y cierra la sesión.
+        if ($esPropio && ($passwordCambiada || $data['nombre_usuario'] !== $usuarioAnterior)) {
+            if ($passwordCambiada) {
+                $this->registrar('password', null, 'actualizada');
+            }
+
+            if ($data['nombre_usuario'] !== $usuarioAnterior) {
+                $this->registrar('nombre_usuario', $usuarioAnterior, $data['nombre_usuario']);
+            }
+
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')
+                ->with('success', 'Credenciales actualizadas. Inicia sesión de nuevo.');
+        }
 
         return redirect()->route('admin.administradores.index')
             ->with('success', 'Administrador actualizado correctamente.');
@@ -121,5 +122,15 @@ class AdministradorController extends Controller
     private function soloAdmin(Usuario $usuario): void
     {
         abort_unless($usuario->rol_id === 1, 404);
+    }
+
+    private function registrar(string $clave, $anterior, $nuevo): void
+    {
+        ConfiguracionLog::create([
+            'usuario_id' => auth()->id(),
+            'clave' => $clave,
+            'valor_anterior' => $anterior === null ? null : (string) $anterior,
+            'valor_nuevo' => $nuevo === null ? null : (string) $nuevo,
+        ]);
     }
 }

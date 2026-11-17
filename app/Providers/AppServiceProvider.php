@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Http\View\Composers\AdminMenuComposer;
+use App\Http\View\Composers\AdminLayoutComposer;
 use App\Models\Configuracion;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->aplicarZonaHoraria();
 
-        View::composer('layouts.admin', AdminMenuComposer::class);
+        View::composer('layouts.admin', AdminLayoutComposer::class);
 
         // Se calcula en cada render para reflejar cambios de configuración sin reiniciar.
         View::composer('*', function ($view) {
@@ -49,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
                 date_default_timezone_set($zona);
                 config(['app.timezone' => $zona]);
             }
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException) {
             // Base de datos no disponible todavía.
         }
     }
@@ -68,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                 'leyenda' => (string) Configuracion::obtenerValor('negocio_leyenda', ''),
                 'logo' => Configuracion::obtenerLogo(),
             ];
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException) {
             return [
                 'nombre' => 'Pescadería Don Walter',
                 'ruc' => '',

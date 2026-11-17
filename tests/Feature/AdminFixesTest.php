@@ -332,7 +332,6 @@ class AdminFixesTest extends TestCase
     {
         Configuracion::updateOrCreate(['clave' => 'negocio_direccion'], ['valor' => 'Calle Configurada 123']);
         Configuracion::updateOrCreate(['clave' => 'negocio_telefono'], ['valor' => '0990001111']);
-        Configuracion::flush();
 
         $response = $this->get(route('home'));
 
@@ -353,13 +352,11 @@ class AdminFixesTest extends TestCase
         ]);
 
         Configuracion::updateOrCreate(['clave' => 'umbral_bajo_stock'], ['valor' => '100']);
-        Configuracion::flush();
 
         $response = $this->actingAs($this->admin)->get(route('admin.reportes.bajo-stock'));
         $this->assertCount(1, $response->viewData('productos'));
 
         Configuracion::updateOrCreate(['clave' => 'umbral_bajo_stock'], ['valor' => '0']);
-        Configuracion::flush();
 
         $response = $this->actingAs($this->admin)->get(route('admin.reportes.bajo-stock'));
         $this->assertCount(0, $response->viewData('productos'));
@@ -386,7 +383,6 @@ class AdminFixesTest extends TestCase
         $this->assertEquals(15.0, (float) $pedido->iva_pct);
 
         Configuracion::updateOrCreate(['clave' => 'iva_actual'], ['valor' => '20']);
-        Configuracion::flush();
 
         $response = $this->actingAs($this->cliente)->get(route('pedidos.receipt', $pedido->pedido_id));
 
@@ -424,5 +420,22 @@ class AdminFixesTest extends TestCase
 
         Configuracion::updateOrCreate(['clave' => 'iva_actual'], ['valor' => '20']);
         $this->assertEquals(20.0, Configuracion::obtenerIva());
+    }
+
+    public function test_iva_pct_backfill_uses_real_division_on_integer_totals(): void
+    {
+        Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'subtotal' => 100,
+            'iva' => 15,
+            'iva_pct' => 0,
+            'total' => 115,
+            'estado' => 'Pendiente',
+        ]);
+
+        $migration = require database_path('migrations/2026_11_18_000001_backfill_iva_pct_on_pedido_table.php');
+        $migration->up();
+
+        $this->assertEquals(15.0, (float) Pedido::first()->iva_pct);
     }
 }

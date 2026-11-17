@@ -171,9 +171,51 @@ class AdminManagementTest extends TestCase
                 'current_password' => 'secret123',
                 'password' => 'nuevaClave123',
             ])
+            ->assertRedirect(route('login'));
+
+        $this->assertGuest();
+        $this->assertTrue(Hash::check('nuevaClave123', $this->admin->fresh()->password));
+        $this->assertDatabaseHas('configuracion_log', ['clave' => 'password', 'valor_nuevo' => 'actualizada']);
+    }
+
+    public function test_changing_another_administrator_password_needs_no_current_password(): void
+    {
+        $otroAdmin = Usuario::create([
+            'nombre_usuario' => 'admin2',
+            'nombre_completo' => 'Admin Dos',
+            'password' => Hash::make('secret123'),
+            'rol_id' => 1,
+            'direccion' => 'Calle 3',
+            'correo' => 'admin2@example.com',
+        ]);
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.administradores.update', $otroAdmin->usuario_id), [
+                'nombre_completo' => 'Admin Dos',
+                'nombre_usuario' => 'admin2',
+                'correo' => 'admin2@example.com',
+                'direccion' => 'Calle 3',
+                'password' => 'otraClave123',
+            ])
             ->assertRedirect(route('admin.administradores.index'));
 
-        $this->assertTrue(Hash::check('nuevaClave123', $this->admin->fresh()->password));
+        $this->assertTrue(Hash::check('otraClave123', $otroAdmin->fresh()->password));
+        $this->assertAuthenticatedAs($this->admin);
+    }
+
+    public function test_administrator_email_must_be_unique(): void
+    {
+        $this->actingAs($this->admin)
+            ->post(route('admin.administradores.store'), [
+                'nombre_completo' => 'Admin Duplicado',
+                'nombre_usuario' => 'admin_dup',
+                'correo' => 'admin1@example.com',
+                'direccion' => 'Calle 4',
+                'password' => 'secret123',
+            ])
+            ->assertSessionHasErrors('correo');
+
+        $this->assertDatabaseMissing('usuario', ['nombre_usuario' => 'admin_dup']);
     }
 
     public function test_administrator_cannot_delete_self(): void

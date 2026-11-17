@@ -16,7 +16,7 @@ Plataforma integral desarrollada en **Laravel 9** para la automatización, gesti
 * **🏷️ Clasificación Dinámica (Categorías CRUD):** Administrador de categorías en tiempo real. Previene pérdida de datos al momento de eliminar clasificaciones, manteniendo el inventario a salvo ("Sin Categoría") y replicando cambios instantáneamente en la interfaz de clientes.
 * **🛒 E-commerce Integrado (Estilo Amazon):** Explorador de catálogo con una **Página de Detalles del Producto (PDP)** inmersiva de 3 columnas, galería visual en alta resolución, y un **Panel de Compra (Buy Box)** con control de stock métrico exacto en tiempo real.
 * **🧾 Comprobantes Electrónicos Paramétricos:** Generación de recibos con identificadores dinámicos que se nutren globalmente desde un centro de **Configuración de Negocio** manipulable directamente desde la UI.
-* **🛡️ Seguridad Activa Modulada:** Interfaz de configuración segmentada (Negocio / Seguridad) que incluye auditoría de credenciales: **alerta crítica mientras la contraseña inicial no se haya rotado** y aviso de caducidad a los 90 días desde el último cambio.
+* **🛡️ Seguridad Activa Modulada:** Interfaz de configuración segmentada (Negocio / Seguridad) que incluye auditoría de credenciales: **alerta crítica mientras la contraseña inicial no se haya rotado** y aviso de caducidad según el plazo configurado (90 días por defecto).
 * **📊 Experiencia de Usuario (UI/UX) y Escalabilidad:** **Vistas nativas independientes para Autenticación** (Login y Registro) con validación en servidor vía Form Requests, e integración de *DataTables* para búsquedas instantáneas y paginación en el navegador.
 
 ---

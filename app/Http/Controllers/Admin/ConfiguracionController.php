@@ -73,24 +73,34 @@ class ConfiguracionController extends Controller
         $logo = $request->file('negocio_logo');
         unset($data['negocio_logo']);
 
+        $logoAnterior = $logo ? Configuracion::obtenerLogo() : null;
+
         if ($logo) {
             $data['negocio_logo'] = $this->guardarLogo($logo);
         }
 
         DB::transaction(function () use ($data) {
-            foreach ($data as $clave => $valor) {
-                $anterior = Configuracion::obtenerValor($clave);
-                $nuevo = $valor ?? '';
+            // Sin eventos por clave: se invalida la caché una sola vez al final.
+            Configuracion::withoutEvents(function () use ($data) {
+                foreach ($data as $clave => $valor) {
+                    $anterior = Configuracion::obtenerValor($clave);
+                    $nuevo = $valor ?? '';
 
-                Configuracion::updateOrCreate(['clave' => $clave], ['valor' => $nuevo]);
+                    Configuracion::updateOrCreate(['clave' => $clave], ['valor' => $nuevo]);
 
-                if ((string) $anterior !== (string) $nuevo) {
-                    $this->registrar($clave, $anterior, $nuevo);
+                    if ((string) $anterior !== (string) $nuevo) {
+                        $this->registrar($clave, $anterior, $nuevo);
+                    }
                 }
-            }
+            });
         });
 
         Configuracion::flush();
+
+        // El archivo anterior solo se borra cuando la transacción ya confirmó.
+        if ($logoAnterior !== null) {
+            $this->borrarLogo($logoAnterior);
+        }
 
         return redirect()->route('admin.configuracion.edit')
             ->with('success', 'Parámetros del negocio actualizados con éxito.');
@@ -128,19 +138,21 @@ class ConfiguracionController extends Controller
             $user->password_changed_at = now();
         }
 
-        $user->save();
+        DB::transaction(function () use ($user, $passwordCambiada, $nombreUsuarioAnterior, $correoAnterior) {
+            $user->save();
 
-        if ($passwordCambiada) {
-            $this->registrar('password', null, 'actualizada');
-        }
+            if ($passwordCambiada) {
+                $this->registrar('password', null, 'actualizada');
+            }
 
-        if ($nombreUsuarioAnterior !== $user->nombre_usuario) {
-            $this->registrar('nombre_usuario', $nombreUsuarioAnterior, $user->nombre_usuario);
-        }
+            if ($nombreUsuarioAnterior !== $user->nombre_usuario) {
+                $this->registrar('nombre_usuario', $nombreUsuarioAnterior, $user->nombre_usuario);
+            }
 
-        if ($correoAnterior !== $user->correo) {
-            $this->registrar('correo', $correoAnterior, $user->correo);
-        }
+            if ($correoAnterior !== $user->correo) {
+                $this->registrar('correo', $correoAnterior, $user->correo);
+            }
+        });
 
         if ($passwordCambiada || $data['nombre_usuario'] !== $nombreUsuarioAnterior) {
             auth()->logout();
@@ -158,9 +170,6 @@ class ConfiguracionController extends Controller
     {
         $filename = Str::uuid() . '.' . strtolower($file->extension());
         $file->move(public_path('img/negocio'), $filename);
-
-        $anterior = Configuracion::obtenerLogo();
-        $this->borrarLogo($anterior);
 
         return 'img/negocio/' . $filename;
     }
