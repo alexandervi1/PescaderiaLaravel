@@ -47,17 +47,17 @@ class Usuario extends Authenticatable
 
     // ── Relaciones ──
 
-    public function rol()
+    public function rol(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Rol::class, 'rol_id', 'rol_id');
     }
 
-    public function carrito()
+    public function carrito(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Carrito::class, 'usuario_id', 'usuario_id');
     }
 
-    public function pedidos()
+    public function pedidos(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Pedido::class, 'usuario_id', 'usuario_id');
     }

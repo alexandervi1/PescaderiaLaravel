@@ -29,22 +29,22 @@ class Producto extends Model
 
     // ── Relaciones ──
 
-    public function categoria()
+    public function categoria(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Categoria::class, 'categoria_id', 'categoria_id');
     }
 
-    public function unidadCompra()
+    public function unidadCompra(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(UnidadMedida::class, 'unidad_compra_id', 'unidad_id');
     }
 
-    public function unidadVenta()
+    public function unidadVenta(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(UnidadMedida::class, 'unidad_venta_id', 'unidad_id');
     }
 
-    public function pedidos()
+    public function pedidos(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Pedido::class, 'pedidoproducto', 'producto_id', 'pedido_id')
                     ->withPivot('cantidad');

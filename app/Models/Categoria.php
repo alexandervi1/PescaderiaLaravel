@@ -12,7 +12,7 @@ class Categoria extends Model
 
     protected $fillable = ['nombre'];
 
-    public function productos()
+    public function productos(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Producto::class, 'categoria_id', 'categoria_id');
     }

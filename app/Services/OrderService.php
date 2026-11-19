@@ -71,7 +71,7 @@ class OrderService
 
             // Secuencial a partir del ID insertado: seguro ante concurrencia.
             $serie = Configuracion::obtenerSerieComprobante();
-            $pedido->numero_comprobante = $serie . '-' . str_pad($pedido->pedido_id, 9, '0', STR_PAD_LEFT);
+            $pedido->numero_comprobante = $serie . '-' . str_pad((string) $pedido->pedido_id, 9, '0', STR_PAD_LEFT);
             $pedido->save();
 
             foreach ($items as $item) {

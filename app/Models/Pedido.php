@@ -49,12 +49,12 @@ class Pedido extends Model
         return in_array($estado, self::TRANSICIONES[$this->estado] ?? [], true);
     }
 
-    public function usuario()
+    public function usuario(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'usuario_id', 'usuario_id');
     }
 
-    public function productos()
+    public function productos(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Producto::class, 'pedidoproducto', 'pedido_id', 'producto_id')
                     ->withPivot(['cantidad', 'precio_unitario', 'subtotal']);

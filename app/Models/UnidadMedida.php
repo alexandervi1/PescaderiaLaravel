@@ -12,12 +12,12 @@ class UnidadMedida extends Model
 
     protected $fillable = ['nombre', 'abreviatura'];
 
-    public function productosCompra()
+    public function productosCompra(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Producto::class, 'unidad_compra_id', 'unidad_id');
     }
 
-    public function productosVenta()
+    public function productosVenta(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Producto::class, 'unidad_venta_id', 'unidad_id');
     }
