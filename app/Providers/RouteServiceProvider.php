@@ -59,5 +59,14 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+
+        // Login por IP: el límite por usuario+IP de AuthController no frena el barrido de usuarios.
+        RateLimiter::for('login-ip', function (Request $request) {
+            return Limit::perMinute(20)->by($request->ip());
+        });
+
+        RateLimiter::for('registro', function (Request $request) {
+            return Limit::perHour(10)->by($request->ip());
+        });
     }
 }

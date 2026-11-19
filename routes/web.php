@@ -24,9 +24,9 @@ Route::get('/categorias/{categoria}', [CategoriaController::class, 'show'])->nam
 
 // ── Rutas de Autenticación ──
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login-ip');
 Route::get('/registro', [AuthController::class, 'showRegister'])->name('register')->middleware('guest');
-Route::post('/registro', [AuthController::class, 'register']);
+Route::post('/registro', [AuthController::class, 'register'])->middleware('throttle:registro');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // ── Rutas de Cliente (Requiere Login + Rol Cliente o predeterminado para usuarios validos) ──
