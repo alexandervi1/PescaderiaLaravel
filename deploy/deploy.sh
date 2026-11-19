@@ -15,6 +15,13 @@ git pull --ff-only
 echo "==> IPs de Cloudflare"
 ./deploy/update-cloudflare-ips.sh || echo "aviso: no se pudieron actualizar las IPs de Cloudflare; se usa la lista existente"
 
+echo "==> respaldo previo"
+if "${COMPOSE[@]}" ps --status running --services 2>/dev/null | grep -qx db; then
+	./deploy/backup.sh
+else
+	echo "aviso: el contenedor db no está en ejecución; se omite el respaldo previo"
+fi
+
 echo "==> build"
 "${COMPOSE[@]}" build app
 
