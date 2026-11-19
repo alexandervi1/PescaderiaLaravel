@@ -29,7 +29,8 @@ COPY --from=vendor /app/vendor /var/www/html/vendor
 WORKDIR /var/www/html
 COPY . .
 
-RUN chown -R www-data:www-data storage bootstrap/cache \
+RUN mkdir -p public/img/productos public/img/negocio \
+    && chown -R www-data:www-data storage bootstrap/cache public/img \
     && chmod +x docker/entrypoint.sh
 
 ENTRYPOINT ["/var/www/html/docker/entrypoint.sh"]

@@ -55,3 +55,11 @@ No se añade `Content-Security-Policy`: el panel carga Bootstrap, DataTables, Ch
 
 Sin decisión del negocio no se implementa ninguna de las dos.
 
+## Revisión final del branch (mejora/laravel-10)
+
+- Corregido (importante): `DatabaseSeeder` valida las credenciales del admin **antes** de insertar roles/config/unidades/categorías; prueba `test_produccion_sin_credenciales_no_deja_datos_a_medias` en RED→GREEN. 83 pruebas en verde.
+- Corregido (importante): `public/img` se chown a `www-data` en imagen y entrypoint, con `mkdir -p` y `.gitkeep` en `productos/` y `negocio/`. No verificable sin daemon Docker.
+- Diferido (menor): Caddy no reescribe `X-Forwarded-Host`/`X-Forwarded-Port`; un cliente podría influir en `$request->getHost()`. Arreglo sugerido: `header_up X-Forwarded-Host {http.request.host}` y `header_up X-Forwarded-Port {http.request.port}`.
+- Diferido (menor): el workflow de CI sólo dispara en `push` a `master`; añadir el patrón de ramas de trabajo a `push.branches` si se quiere CI en cada push.
+
+

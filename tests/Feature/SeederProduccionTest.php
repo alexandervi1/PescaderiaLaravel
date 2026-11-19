@@ -92,6 +92,24 @@ class SeederProduccionTest extends TestCase
         $this->assertTrue(Hash::check('admin123', $admin->password));
     }
 
+    public function test_produccion_sin_credenciales_no_deja_datos_a_medias(): void
+    {
+        $this->enProduccion();
+
+        try {
+            $this->sembrar();
+            $this->fail('Se esperaba que el sembrado fallara sin credenciales.');
+        } catch (\RuntimeException $e) {
+            // Esperado: el seeder rechaza arrancar en producción sin credenciales.
+        }
+
+        $this->assertDatabaseCount('rol', 0);
+        $this->assertDatabaseCount('configuracion', 0);
+        $this->assertDatabaseCount('unidad_medida', 0);
+        $this->assertDatabaseCount('categoria', 0);
+        $this->assertDatabaseCount('usuario', 0);
+    }
+
     public function test_el_catalogo_demo_se_siembra_por_defecto(): void
     {
         $this->sembrar();

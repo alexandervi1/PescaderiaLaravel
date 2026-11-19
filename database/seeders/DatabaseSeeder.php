@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        // Se valida antes de tocar la base: si falta configuración en producción,
+        // el error es claro y no queda un sembrado a medias.
+        $admin = $this->credencialesAdmin();
+
         // ── 1. Roles ──
         Rol::insert([
             ['rol_id' => 1, 'nombre' => 'Administrador'],
@@ -45,8 +49,6 @@ class DatabaseSeeder extends Seeder
 
         // ── 5. Usuario Admin ──
         // En producción se define desde el entorno para no arrancar con credenciales conocidas.
-        $admin = $this->credencialesAdmin();
-
         Usuario::create([
             'nombre_usuario'      => $admin['usuario'],
             'nombre_completo'     => $admin['nombre_completo'],
