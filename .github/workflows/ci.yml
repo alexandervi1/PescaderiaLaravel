@@ -31,6 +31,9 @@ jobs:
       - name: Pruebas
         run: php artisan test
 
+      - name: Análisis estático
+        run: vendor/bin/phpstan analyse --no-progress
+
   auditoria:
     runs-on: ubuntu-latest
     continue-on-error: true

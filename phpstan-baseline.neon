@@ -1,0 +1,136 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Dead catch \\- Illuminate\\\\Database\\\\QueryException is never thrown in the try block\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/AdministradorController.php
+
+		-
+			message: "#^Relation 'producto' is not found in App\\\\Models\\\\Carrito model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/CarritoController.php
+
+		-
+			message: "#^Relation 'rol' is not found in App\\\\Models\\\\Usuario model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ClienteController.php
+
+		-
+			message: "#^Relation 'usuario' is not found in App\\\\Models\\\\ConfiguracionLog model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ConfiguracionController.php
+
+		-
+			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: "#^Relation 'unidadVenta' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: "#^Relation 'usuario' is not found in App\\\\Models\\\\Pedido model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: "#^Relation 'productos' is not found in App\\\\Models\\\\Pedido model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/PedidoController.php
+
+		-
+			message: "#^Relation 'usuario' is not found in App\\\\Models\\\\Pedido model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/PedidoController.php
+
+		-
+			message: "#^Dead catch \\- Illuminate\\\\Database\\\\QueryException is never thrown in the try block\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ProductoController.php
+
+		-
+			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ProductoController.php
+
+		-
+			message: "#^Relation 'unidadCompra' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ProductoController.php
+
+		-
+			message: "#^Relation 'unidadVenta' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ProductoController.php
+
+		-
+			message: "#^Parameter \\#2 \\$operator of static method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\Pedido\\>\\:\\:whereYear\\(\\) expects string, int given\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ReporteController.php
+
+		-
+			message: "#^Relation 'usuario' is not found in App\\\\Models\\\\Pedido model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ReporteController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Models\\\\Carrito\\:\\:\\$producto\\.$#"
+			count: 4
+			path: app/Http/Controllers/CarritoController.php
+
+		-
+			message: "#^Relation 'producto' is not found in App\\\\Models\\\\Carrito model\\.$#"
+			count: 2
+			path: app/Http/Controllers/CarritoController.php
+
+		-
+			message: "#^Relation 'productos' is not found in App\\\\Models\\\\Categoria model\\.$#"
+			count: 1
+			path: app/Http/Controllers/CategoriaController.php
+
+		-
+			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: "#^Relation 'unidadVenta' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/HomeController.php
+
+		-
+			message: "#^Relation 'productos' is not found in App\\\\Models\\\\Pedido model\\.$#"
+			count: 3
+			path: app/Http/Controllers/PedidoController.php
+
+		-
+			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/ProductoPublicoController.php
+
+		-
+			message: "#^Relation 'unidadVenta' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/ProductoPublicoController.php
+
+		-
+			message: "#^Access to an undefined property App\\\\Models\\\\Carrito\\:\\:\\$producto\\.$#"
+			count: 1
+			path: app/Models/Carrito.php
+
+		-
+			message: "#^PHPDoc tag @var above a method has no effect\\.$#"
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
+			message: "#^PHPDoc tag @var does not specify variable name\\.$#"
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function str_pad expects string, int given\\.$#"
+			count: 1
+			path: app/Services/OrderService.php
