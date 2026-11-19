@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pedido;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class PedidoController extends Controller
@@ -34,37 +34,29 @@ class PedidoController extends Controller
         return view('admin.pedidos.show', compact('pedido'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, OrderService $orderService)
     {
         $data = $request->validate([
             'estado' => ['required', Rule::in(Pedido::ESTADOS)],
         ]);
 
-        $pedido = Pedido::with('productos')->findOrFail($id);
+        $pedido = Pedido::findOrFail($id);
         $nuevoEstado = $data['estado'];
 
-        if (! $pedido->puedeCambiarA($nuevoEstado)) {
-            return back()->with('error', "No se puede pasar un pedido de {$pedido->estado} a {$nuevoEstado}.");
-        }
+        try {
+            if ($nuevoEstado === Pedido::ESTADO_CANCELADO) {
+                $orderService->cancelOrder($pedido);
 
-        if ($nuevoEstado === 'Cancelado' && $pedido->estado !== 'Cancelado') {
-            DB::transaction(function () use ($pedido) {
-                foreach ($pedido->productos as $producto) {
-                    $producto->reponerStock((float) $producto->pivot->cantidad);
-                }
+                return redirect()->route('admin.pedidos.show', $pedido->pedido_id)
+                                 ->with('success', 'Pedido cancelado y stock repuesto.');
+            }
 
-                $pedido->estado = 'Cancelado';
-                $pedido->save();
-            });
+            $orderService->changeStatus($pedido, $nuevoEstado);
 
             return redirect()->route('admin.pedidos.show', $pedido->pedido_id)
-                             ->with('success', 'Pedido cancelado y stock repuesto.');
+                             ->with('success', 'Estado del pedido actualizado correctamente.');
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
         }
-
-        $pedido->estado = $nuevoEstado;
-        $pedido->save();
-
-        return redirect()->route('admin.pedidos.show', $pedido->pedido_id)
-                         ->with('success', 'Estado del pedido actualizado correctamente.');
     }
 }

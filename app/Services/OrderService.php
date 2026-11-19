@@ -94,4 +94,75 @@ class OrderService
             return $pedido->fresh();
         });
     }
+
+    /**
+     * Cancela un pedido reponiendo el stock de sus líneas.
+     *
+     * @throws \RuntimeException con un mensaje apto para el cliente.
+     */
+    public function cancelOrder(Pedido $pedido): Pedido
+    {
+        return DB::transaction(function () use ($pedido) {
+            $bloqueado = Pedido::whereKey($pedido->pedido_id)->lockForUpdate()->firstOrFail();
+
+            if ($bloqueado->estado === Pedido::ESTADO_CANCELADO) {
+                throw new RuntimeException('El pedido ya está cancelado.');
+            }
+
+            if (! $bloqueado->puedeCambiarA(Pedido::ESTADO_CANCELADO)) {
+                throw new RuntimeException("No se puede cancelar un pedido en estado {$bloqueado->estado}.");
+            }
+
+            $lineas = PedidoProducto::where('pedido_id', $bloqueado->pedido_id)->get();
+
+            // Mismo bloqueo que processOrder: evita que un checkout simultáneo pise la reposición.
+            $productos = Producto::whereIn('producto_id', $lineas->pluck('producto_id'))
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('producto_id');
+
+            foreach ($lineas as $linea) {
+                $producto = $productos->get($linea->producto_id);
+
+                // El producto pudo borrarse; la cancelación no debe fallar por eso.
+                if ($producto) {
+                    $producto->reponerStock((float) $linea->cantidad);
+                }
+            }
+
+            $bloqueado->estado = Pedido::ESTADO_CANCELADO;
+            $bloqueado->save();
+
+            return $bloqueado->fresh();
+        });
+    }
+
+    /**
+     * Cambia el estado de un pedido a otra transición distinta de la cancelación.
+     *
+     * @throws \RuntimeException con un mensaje apto para el cliente.
+     */
+    public function changeStatus(Pedido $pedido, string $estado): Pedido
+    {
+        return DB::transaction(function () use ($pedido, $estado) {
+            $bloqueado = Pedido::whereKey($pedido->pedido_id)->lockForUpdate()->firstOrFail();
+
+            if (! in_array($estado, Pedido::ESTADOS, true)) {
+                throw new RuntimeException("Estado desconocido: {$estado}.");
+            }
+
+            if ($estado === Pedido::ESTADO_CANCELADO) {
+                throw new RuntimeException('La cancelación se procesa con cancelOrder.');
+            }
+
+            if (! $bloqueado->puedeCambiarA($estado)) {
+                throw new RuntimeException("No se puede pasar un pedido de {$bloqueado->estado} a {$estado}.");
+            }
+
+            $bloqueado->estado = $estado;
+            $bloqueado->save();
+
+            return $bloqueado->fresh();
+        });
+    }
 }
