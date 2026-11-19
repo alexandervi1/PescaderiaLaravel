@@ -31,19 +31,25 @@
                 <h6 class="mb-0 fw-bold text-brand">Actualizar Estado</h6>
             </div>
             <div class="card-body bg-light rounded-bottom-4">
+                @php
+                    $transiciones = array_values(array_unique(array_merge(
+                        [$pedido->estado],
+                        \App\Models\Pedido::TRANSICIONES[$pedido->estado] ?? []
+                    )));
+                    $sinTransiciones = count($transiciones) === 1;
+                @endphp
                 <form action="{{ route('admin.pedidos.update', $pedido->pedido_id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="mb-3">
                         <label class="form-label fw-bold small text-muted text-uppercase">Estado Actual</label>
-                        <select name="estado" class="form-select">
-                            <option value="Pendiente" {{ $pedido->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
-                            <option value="Enviado" {{ $pedido->estado == 'Enviado' ? 'selected' : '' }}>Enviado</option>
-                            <option value="Entregado" {{ $pedido->estado == 'Entregado' ? 'selected' : '' }}>Entregado</option>
-                            <option value="Cancelado" {{ $pedido->estado == 'Cancelado' ? 'selected' : '' }}>Cancelado</option>
+                        <select name="estado" class="form-select" {{ $sinTransiciones ? 'disabled' : '' }}>
+                            @foreach($transiciones as $estado)
+                                <option value="{{ $estado }}" {{ $pedido->estado == $estado ? 'selected' : '' }}>{{ $estado }}</option>
+                            @endforeach
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill" {{ $sinTransiciones ? 'disabled' : '' }}>
                         Guardar Cambios <i class="fas fa-save ms-1"></i>
                     </button>
                 </form>

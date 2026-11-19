@@ -6,6 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pedido extends Model
 {
+    public const ESTADO_PENDIENTE = 'Pendiente';
+    public const ESTADO_ENVIADO = 'Enviado';
+    public const ESTADO_ENTREGADO = 'Entregado';
+    public const ESTADO_CANCELADO = 'Cancelado';
+
+    public const ESTADOS = [
+        self::ESTADO_PENDIENTE,
+        self::ESTADO_ENVIADO,
+        self::ESTADO_ENTREGADO,
+        self::ESTADO_CANCELADO,
+    ];
+
+    /** Transiciones permitidas; Entregado y Cancelado son terminales. */
+    public const TRANSICIONES = [
+        self::ESTADO_PENDIENTE => [self::ESTADO_ENVIADO, self::ESTADO_CANCELADO],
+        self::ESTADO_ENVIADO => [self::ESTADO_ENTREGADO, self::ESTADO_CANCELADO],
+        self::ESTADO_ENTREGADO => [],
+        self::ESTADO_CANCELADO => [],
+    ];
+
     protected $table = 'pedido';
     protected $primaryKey = 'pedido_id';
     public $timestamps = false;
@@ -19,6 +39,15 @@ class Pedido extends Model
         'total' => 'decimal:2',
         'fecha_pedido' => 'datetime',
     ];
+
+    public function puedeCambiarA(string $estado): bool
+    {
+        if ($estado === $this->estado) {
+            return true;
+        }
+
+        return in_array($estado, self::TRANSICIONES[$this->estado] ?? [], true);
+    }
 
     public function usuario()
     {

@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PedidoController extends Controller
 {
     public function index(Request $request)
     {
-        $estados = ['Pendiente', 'Enviado', 'Entregado', 'Cancelado'];
+        $estados = Pedido::ESTADOS;
         $estado = $request->query('estado');
         $estado = in_array($estado, $estados, true) ? $estado : null;
 
@@ -36,14 +37,14 @@ class PedidoController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'estado' => 'required|in:Pendiente,Enviado,Entregado,Cancelado'
+            'estado' => ['required', Rule::in(Pedido::ESTADOS)],
         ]);
 
         $pedido = Pedido::with('productos')->findOrFail($id);
         $nuevoEstado = $data['estado'];
 
-        if ($pedido->estado === 'Cancelado' && $nuevoEstado !== 'Cancelado') {
-            return back()->with('error', 'Un pedido cancelado no puede reactivarse.');
+        if (! $pedido->puedeCambiarA($nuevoEstado)) {
+            return back()->with('error', "No se puede pasar un pedido de {$pedido->estado} a {$nuevoEstado}.");
         }
 
         if ($nuevoEstado === 'Cancelado' && $pedido->estado !== 'Cancelado') {
