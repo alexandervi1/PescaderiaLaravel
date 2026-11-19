@@ -13,6 +13,7 @@ fi
 if [ "${DB_CONNECTION:-mysql}" = "mysql" ]; then
     echo "entrypoint: esperando a MySQL en ${DB_HOST:-db}:${DB_PORT:-3306}..."
     attempts=0
+    # shellcheck disable=SC2016  # el código PHP va literal: las variables las resuelve PHP.
     until php -r '
         $host = getenv("DB_HOST") ?: "db";
         $port = getenv("DB_PORT") ?: "3306";
@@ -47,6 +48,7 @@ fi
 php artisan migrate --force
 
 if [ "${SEED_ON_START:-true}" = "true" ]; then
+    # shellcheck disable=SC2016  # el código PHP va literal: las variables las resuelve PHP.
     usuarios="$(php -r '
         $host = getenv("DB_HOST") ?: "db";
         $port = getenv("DB_PORT") ?: "3306";

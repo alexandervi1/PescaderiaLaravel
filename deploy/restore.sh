@@ -26,6 +26,7 @@ echo "==> deteniendo app"
 "${COMPOSE[@]}" stop app
 
 echo "==> restaurando base"
+# shellcheck disable=SC2016  # las variables las expande sh dentro del contenedor db.
 gunzip -c "$DUMP" | "${COMPOSE[@]}" exec -T db sh -c \
 	'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -u root "$MYSQL_DATABASE"'
 

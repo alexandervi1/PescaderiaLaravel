@@ -15,6 +15,7 @@ mkdir -p "$DEST"
 DUMP_FILE="$DEST/pescaderia-$STAMP.sql.gz"
 UPLOADS_FILE="$DEST/uploads-$STAMP.tar.gz"
 
+# shellcheck disable=SC2016  # las variables las expande sh dentro del contenedor db.
 "${COMPOSE[@]}" exec -T db sh -c \
     'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump --single-transaction --quick --no-tablespaces -u root "$MYSQL_DATABASE"' \
     | gzip > "$DUMP_FILE"
