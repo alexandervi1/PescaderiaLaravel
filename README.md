@@ -95,6 +95,7 @@ Disponible en `http://localhost:8080`. En el primer arranque el contenedor esper
 * **`APP_KEY`:** se toma de `.env`; si falta, el contenedor genera una efímera y lo avisa.
 * **Datos persistentes:** volumen `dbdata` para MySQL, y `./public/img` + `./storage` montados desde el repositorio, de modo que las subidas del panel y los logs sobreviven al contenedor.
 * **Sembrar de nuevo / borrar datos:** `docker compose exec app php artisan migrate:fresh --seed` o `docker compose down -v` (elimina el volumen de MySQL).
+* **Catálogo de ejemplo:** `SEED_DEMO` (por defecto `true`). Con `SEED_DEMO=false` el sembrado crea sólo roles, configuración, unidades y categorías; en producción está desactivado salvo que lo actives.
 
 El `database.sqlite` local no se usa dentro de Docker: el contenedor habla con MySQL.
 

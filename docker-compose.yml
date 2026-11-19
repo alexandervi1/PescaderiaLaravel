@@ -25,6 +25,7 @@ services:
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
       SEED_ON_START: "${SEED_ON_START:-true}"
+      SEED_DEMO: "${SEED_DEMO:-true}"
     volumes:
       - ./public/img:/var/www/html/public/img
       - ./storage:/var/www/html/storage
