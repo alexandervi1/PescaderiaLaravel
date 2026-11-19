@@ -9,6 +9,17 @@
 - [x] F2.1 — d4f3da7 — `Pedido::ESTADOS` / `TRANSICIONES` / `puedeCambiarA()`; el select sólo ofrece transiciones válidas — pruebas: 63 passed
 - [x] F2.2 — f9f96a8 — `cancelOrder()` y `changeStatus()` transaccionales con `lockForUpdate` en `OrderService`; el controlador ya no usa `DB::transaction` — pruebas: 63 passed
 - [x] F2.3 — c1ac5b8 — 8 pruebas de transiciones, reposición exacta, doble cancelación, producto borrado y cliente sin permiso — pruebas: 71 passed
+- [x] F3.1 — 0c6cbe2 — `GET /api/salud` comprueba la BD y responde 200/503 sin detalles; healthcheck apunta ahí — pruebas: 72 passed
+- [x] F3.2 — 685cbb2 — `SESSION_ENCRYPT` y `SESSION_SAME_SITE` por entorno; `.env.prod.example` con `encrypt=true`, `lax` y 120 min — pruebas: 73 passed
+- [x] F3.3 — ff7070a — middleware `CabecerasSeguridad` en el grupo `web` (nosniff, SAMEORIGIN, Referrer-Policy, Permissions-Policy) — pruebas: 73 passed
+- [x] F3.4 — 73a3475 — limitadores `login-ip` (20/min) y `registro` (10/hora) aplicados a `POST /login` y `POST /registro` — pruebas: 75 passed
+- [x] F3.5 — 19832a9 — imágenes de producto y logo: jpg/jpeg/png/webp, máximo 4000×4000, nombre UUID — pruebas: 78 passed. Las pruebas usan PNG generados sin `ext-gd` porque el PHP local no la trae.
+- [x] F3.6 — ced3788 — auditoría de middleware en `Route::getRoutes()` y aislamiento de `/mis-pedidos/{id}` entre clientes — pruebas: 81 passed
+
+## MEJORA FUTURA — CSP en modo Report-Only
+
+No se añade `Content-Security-Policy`: el panel carga Bootstrap, DataTables, Chart.js y FontAwesome por CDN y usa scripts inline. El siguiente paso es desplegar una CSP `Content-Security-Policy-Report-Only` con `report-uri`/`report-to`, revisar los informes y sólo entonces pasarla a bloqueante.
+
 
 ## PENDIENTE DECISIÓN — cantidades fraccionarias (F2.4)
 
