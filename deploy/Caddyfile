@@ -16,6 +16,9 @@ import /etc/caddy/cloudflare-ips.caddy
 		# así que la cabecera siempre está presente y se puede confiar en ella.
 		header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}
 		header_up X-Forwarded-Proto https
+		# Caddy no gestiona X-Forwarded-Port y dejaría pasar la del cliente; Laravel
+		# confía en ella (TRUSTED_PROXIES=*) al generar URLs, así que se fija aquí.
+		header_up X-Forwarded-Port 443
 	}
 
 	header {
