@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/salud', \App\Http\Controllers\SaludController::class);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
