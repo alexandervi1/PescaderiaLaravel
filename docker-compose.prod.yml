@@ -20,6 +20,7 @@ services:
       CACHE_DRIVER: file
       QUEUE_CONNECTION: sync
       FILESYSTEM_DISK: local
+      TRUSTED_PROXIES: "*"
     volumes:
       - ./public/img:/var/www/html/public/img
       - ./storage:/var/www/html/storage

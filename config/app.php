@@ -32,6 +32,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Proxies de confianza
+    |--------------------------------------------------------------------------
+    |
+    | "*" confía en cualquier proxy (correcto cuando la app sólo es alcanzable
+    | desde Caddy). Una lista separada por comas confía sólo en esas IPs; vacío
+    | o null desactiva la confianza en cabeceras X-Forwarded-*.
+    |
+    */
+
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |
