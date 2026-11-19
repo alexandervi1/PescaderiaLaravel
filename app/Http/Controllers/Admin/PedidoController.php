@@ -32,7 +32,9 @@ class PedidoController extends Controller
                     ->orderBy('fecha_pedido', 'desc')
                     ->get();
 
+        // Mismo rango que el listado: los contadores de los filtros deben cuadrar con lo que se ve.
         $conteos = Pedido::selectRaw('estado, count(*) as pedidos')
+                    ->where('fecha_pedido', '>=', $desde)
                     ->groupBy('estado')
                     ->pluck('pedidos', 'estado');
 

@@ -306,6 +306,8 @@ class AdminFixesTest extends TestCase
         $porDefecto = $this->actingAs($this->admin)->get(route('admin.pedidos.index'));
         $porDefecto->assertOk();
         $this->assertSame([$reciente->pedido_id], $porDefecto->viewData('pedidos')->pluck('pedido_id')->all());
+        // Los contadores de los filtros usan el mismo rango que el listado.
+        $this->assertSame(1, (int) $porDefecto->viewData('conteos')->sum());
 
         $ampliado = $this->actingAs($this->admin)->get(route('admin.pedidos.index', [
             'desde' => now()->subDays(180)->toDateString(),
@@ -315,6 +317,7 @@ class AdminFixesTest extends TestCase
             [$antiguo->pedido_id, $reciente->pedido_id],
             $ampliado->viewData('pedidos')->pluck('pedido_id')->all()
         );
+        $this->assertSame(2, (int) $ampliado->viewData('conteos')->sum());
     }
 
     public function test_invalid_order_status_filter_falls_back_to_all(): void
