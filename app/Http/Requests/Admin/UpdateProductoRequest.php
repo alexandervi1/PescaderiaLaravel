@@ -32,7 +32,7 @@ class UpdateProductoRequest extends FormRequest
             'categoria_id'      => 'required|exists:categoria,categoria_id',
             'unidad_compra_id'  => 'required|exists:unidad_medida,unidad_id',
             'unidad_venta_id'   => 'required|exists:unidad_medida,unidad_id',
-            'imagen'            => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'imagen'            => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:max_width=4000,max_height=4000',
         ];
     }
 

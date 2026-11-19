@@ -65,7 +65,7 @@ class ConfiguracionController extends Controller
             'negocio_direccion' => 'required|string|max:255',
             'negocio_telefono' => 'required|string|max:20',
             'negocio_leyenda' => 'nullable|string|max:255',
-            'negocio_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'negocio_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:max_width=4000,max_height=4000',
         ], [
             'comprobante_serie.regex' => 'La serie debe tener el formato 000-000 (por ejemplo 001-001).',
         ]);

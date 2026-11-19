@@ -26,8 +26,19 @@ class PedidoController extends Controller
 
             return redirect()->route('pedidos.show', $pedido->pedido_id)
                 ->with('success', 'Pedido procesado con éxito. Gracias por tu compra.');
-        } catch (\Exception $e) {
+        } catch (\PDOException $e) {
+            // QueryException hereda de PDOException y a su vez de RuntimeException:
+            // se atrapa antes para no filtrar SQL al cliente.
+            report($e);
+
+            return back()->with('error', 'No pudimos procesar tu pedido. Inténtalo de nuevo en unos minutos.');
+        } catch (\RuntimeException $e) {
+            // Errores de negocio pensados para el cliente (stock, carrito vacío…).
             return back()->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'No pudimos procesar tu pedido. Inténtalo de nuevo en unos minutos.');
         }
     }
 

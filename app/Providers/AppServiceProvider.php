@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\View\Composers\AdminLayoutComposer;
 use App\Models\Configuracion;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Fuera de producción, un lazy load es un fallo visible en las pruebas.
+        Model::preventLazyLoading(! app()->isProduction());
+
         $this->aplicarZonaHoraria();
 
         View::composer('layouts.admin', AdminLayoutComposer::class);

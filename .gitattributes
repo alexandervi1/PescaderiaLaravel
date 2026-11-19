@@ -6,5 +6,8 @@
 *.md diff=markdown
 *.php diff=php
 
+# Scripts que corren dentro de Linux: nunca CRLF
+*.sh text eol=lf
+
 /.github export-ignore
 CHANGELOG.md export-ignore

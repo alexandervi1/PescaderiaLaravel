@@ -1,11 +1,11 @@
 # 🐟 Pescadería Don Walter — Plataforma E-commerce y Gestión
 
-![Laravel](https://img.shields.io/badge/Laravel-9.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-Plataforma integral en **Laravel 9** para la venta y gestión de productos del mar. Tiene una fachada pública para clientes y un panel de administración que controla catálogo, inventario, pedidos, clientes y configuración del negocio.
+Plataforma integral en **Laravel 10** para la venta y gestión de productos del mar. Tiene una fachada pública para clientes y un panel de administración que controla catálogo, inventario, pedidos, clientes y configuración del negocio.
 
 ---
 
@@ -37,7 +37,7 @@ Plataforma integral en **Laravel 9** para la venta y gestión de productos del m
 
 ## 🛠️ Stack Tecnológico
 
-* **Backend:** PHP 8, Laravel 9
+* **Backend:** PHP 8.1+, Laravel 10
 * **Frontend:** Blade, Bootstrap 5.3, CSS propio con tokens de diseño
 * **Base de datos:** MySQL (SQLite para desarrollo local y pruebas)
 * **Librerías:** Chart.js, DataTables, FontAwesome (vía CDN)
@@ -77,6 +77,36 @@ Crea la estructura, el administrador inicial, las unidades de medida, las catego
 php artisan serve
 ```
 Disponible en `http://localhost:8000`.
+
+---
+
+## 🐳 Docker
+
+Sin PHP, Composer ni MySQL instalados: un servicio Apache/PHP 8.2 (`app`) y un MySQL 8 (`db`).
+
+```bash
+docker compose up --build
+```
+
+Disponible en `http://localhost:8080`. En el primer arranque el contenedor espera a MySQL, migra y siembra la base (catálogo de ejemplo + `admin123` / `admin123`). Los arranques siguientes sólo aplican migraciones pendientes.
+
+* **Puerto HTTP:** `DOCKER_HTTP_PORT` (por defecto `8080`).
+* **Credenciales MySQL:** `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD` (por defecto `pescaderia` / `pescaderia` / `secret` / `root`). MySQL no se publica en el host; conéctate con `docker compose exec db mysql -upescaderia -psecret pescaderia`.
+* **`APP_KEY`:** se toma de `.env`; si falta, el contenedor genera una efímera y lo avisa.
+* **Datos persistentes:** volumen `dbdata` para MySQL, y `./public/img` + `./storage` montados desde el repositorio, de modo que las subidas del panel y los logs sobreviven al contenedor.
+* **Sembrar de nuevo / borrar datos:** `docker compose exec -u www-data app php artisan migrate:fresh --seed` o `docker compose down -v` (elimina el volumen de MySQL).
+* **Catálogo de ejemplo:** `SEED_DEMO` (por defecto `true`). Con `SEED_DEMO=false` el sembrado crea sólo roles, configuración, unidades y categorías; en producción está desactivado salvo que lo actives.
+
+El `database.sqlite` local no se usa dentro de Docker: el contenedor habla con MySQL.
+
+### Producción (VPS + Cloudflare)
+
+`docker-compose.prod.yml` añade Caddy con TLS, sin publicar la app, y usa el target `prod` de la imagen (OPcache congelado, `APP_DEBUG=false`). Pasos completos, firewall de Oracle, certificado de origen de Cloudflare, backups y rollback en [`deploy/README.md`](deploy/README.md). Resumen:
+
+```bash
+cp deploy/.env.prod.example deploy/.env.prod   # completar secretos y dominio
+./deploy/deploy.sh
+```
 
 ---
 
