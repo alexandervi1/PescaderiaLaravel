@@ -10,9 +10,12 @@ class TrustProxies extends Middleware
     /**
      * The trusted proxies for this application.
      *
+     * El contenedor app no publica puertos: sólo lo alcanza el proxy interno
+     * (Caddy en Docker), así que se confía en sus cabeceras X-Forwarded-*.
+     *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.

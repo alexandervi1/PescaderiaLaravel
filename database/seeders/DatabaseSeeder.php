@@ -45,13 +45,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // ── 5. Usuario Admin ──
+        // En producción se define desde el entorno para no arrancar con credenciales conocidas.
         Usuario::create([
-            'nombre_usuario'  => 'admin123',
+            'nombre_usuario'  => env('INITIAL_ADMIN_USER', 'admin123'),
             'nombre_completo' => 'Maritza Rosero',
-            'password'        => Hash::make('admin123'),
+            'password'        => Hash::make(env('INITIAL_ADMIN_PASSWORD', 'admin123')),
             'rol_id'          => 1,
             'direccion'       => 'Av. Canónigo Ramos y 11 de Noviembre',
-            'correo'          => 'maritza@gmail.com',
+            'correo'          => env('INITIAL_ADMIN_EMAIL', 'maritza@gmail.com'),
             'telefono'        => '0992470053',
         ]);
 

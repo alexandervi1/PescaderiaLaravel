@@ -80,6 +80,35 @@ Disponible en `http://localhost:8000`.
 
 ---
 
+## 🐳 Docker
+
+Sin PHP, Composer ni MySQL instalados: un servicio Apache/PHP 8.2 (`app`) y un MySQL 8 (`db`).
+
+```bash
+docker compose up --build
+```
+
+Disponible en `http://localhost:8080`. En el primer arranque el contenedor espera a MySQL, migra y siembra la base (catálogo de ejemplo + `admin123` / `admin123`). Los arranques siguientes sólo aplican migraciones pendientes.
+
+* **Puerto HTTP:** `DOCKER_HTTP_PORT` (por defecto `8080`).
+* **Credenciales MySQL:** `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD` (por defecto `pescaderia` / `pescaderia` / `secret` / `root`). MySQL no se publica en el host; conéctate con `docker compose exec db mysql -upescaderia -psecret pescaderia`.
+* **`APP_KEY`:** se toma de `.env`; si falta, el contenedor genera una efímera y lo avisa.
+* **Datos persistentes:** volumen `dbdata` para MySQL, y `./public/img` + `./storage` montados desde el repositorio, de modo que las subidas del panel y los logs sobreviven al contenedor.
+* **Sembrar de nuevo / borrar datos:** `docker compose exec app php artisan migrate:fresh --seed` o `docker compose down -v` (elimina el volumen de MySQL).
+
+El `database.sqlite` local no se usa dentro de Docker: el contenedor habla con MySQL.
+
+### Producción (VPS + Cloudflare)
+
+`docker-compose.prod.yml` añade Caddy con TLS, sin publicar la app, y usa el target `prod` de la imagen (OPcache congelado, `APP_DEBUG=false`). Pasos completos, firewall de Oracle, certificado de origen de Cloudflare, backups y rollback en [`deploy/README.md`](deploy/README.md). Resumen:
+
+```bash
+cp deploy/.env.prod.example deploy/.env.prod   # completar secretos y dominio
+./deploy/deploy.sh
+```
+
+---
+
 ## 🔐 Credenciales base (solo pruebas)
 
 * **Rol:** Administrador
