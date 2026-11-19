@@ -66,11 +66,6 @@ parameters:
 			path: app/Http/Controllers/Admin/ProductoController.php
 
 		-
-			message: "#^Parameter \\#2 \\$operator of static method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<App\\\\Models\\\\Pedido\\>\\:\\:whereYear\\(\\) expects string, int given\\.$#"
-			count: 1
-			path: app/Http/Controllers/Admin/ReporteController.php
-
-		-
 			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/ReporteController.php

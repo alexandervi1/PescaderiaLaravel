@@ -184,7 +184,7 @@ class OrderFlowTest extends TestCase
     {
         $this->mock(OrderService::class, function ($mock) {
             $mock->shouldReceive('processOrder')->once()->andThrow(
-                new \Illuminate\Database\QueryException('select * from usuario', [], new \Exception('boom'))
+                new \Illuminate\Database\QueryException('sqlite', 'select * from usuario', [], new \Exception('boom'))
             );
         });
 
