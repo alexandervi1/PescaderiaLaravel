@@ -11,8 +11,8 @@ use App\Models\UnidadMedida;
 use App\Models\Usuario;
 use App\Services\OrderService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class OrderStatusTest extends TestCase
@@ -183,9 +183,10 @@ class OrderStatusTest extends TestCase
         $pedido = $this->pedidoCon([[$producto, 4]]);
 
         // La FK restrict impide el borrado normal; se fuerza el estado que el código debe tolerar.
-        Schema::disableForeignKeyConstraints();
+        // En SQLite, foreign_keys=OFF no surte efecto dentro de la transacción de RefreshDatabase:
+        // se difiere la comprobación al commit, que nunca llega porque la prueba hace rollback.
+        DB::statement('PRAGMA defer_foreign_keys = ON');
         Producto::whereKey($producto->producto_id)->delete();
-        Schema::enableForeignKeyConstraints();
 
         $cancelado = app(OrderService::class)->cancelOrder($pedido);
 
