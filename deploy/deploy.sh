@@ -12,6 +12,9 @@ COMPOSE=(docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod)
 echo "==> git pull"
 git pull --ff-only
 
+echo "==> IPs de Cloudflare"
+./deploy/update-cloudflare-ips.sh || echo "aviso: no se pudieron actualizar las IPs de Cloudflare; se usa la lista existente"
+
 echo "==> build"
 "${COMPOSE[@]}" build app
 

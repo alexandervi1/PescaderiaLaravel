@@ -10,7 +10,7 @@ Supuesto: el repositorio ya está clonado en `/opt/pescaderia` y el usuario tien
 1. `cd /opt/pescaderia && git pull --ff-only`
 2. Verificar `deploy/.env.prod` (si no existe: `cp deploy/.env.prod.example deploy/.env.prod` y completar, ver abajo).
 3. Verificar `deploy/certs/origin.pem` y `deploy/certs/origin.key`.
-4. `chmod +x deploy/deploy.sh deploy/backup.sh`
+4. `chmod +x deploy/deploy.sh deploy/backup.sh deploy/update-cloudflare-ips.sh`
 5. `./deploy/deploy.sh`
 6. Comprobar: `docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod ps` (los tres servicios `running`, `db` `healthy`).
 7. `curl -sI https://APP_DOMAIN | head -1` debe responder `HTTP/2 200` (o `301` a `/`).
@@ -39,7 +39,7 @@ sudo netfilter-persistent save          # Ubuntu/Debian
 # Oracle Linux: sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload
 ```
 
-En la consola de Oracle: **Networking → VCN → Security Lists** debe permitir ingress TCP 80 y 443 desde `0.0.0.0/0`.
+En la consola de Oracle: **Networking → VCN → Security Lists** debe permitir ingress TCP 80 y 443 desde `0.0.0.0/0`. Como defensa adicional, restringe esos ingress a los rangos publicados en <https://www.cloudflare.com/ips/> (los mismos que genera `deploy/update-cloudflare-ips.sh`): Caddy ya rechaza cualquier conexión que no venga de Cloudflare, y la Security List evita que el tráfico llegue siquiera al VPS.
 
 ## 2. Secretos (`deploy/.env.prod`, `chmod 600`)
 
@@ -106,6 +106,7 @@ gunzip -c /var/backups/pescaderia/pescaderia-XXXXXXXX.sql.gz \
 | Cloudflare 521/522 | Puerto 443 cerrado en Security List o iptables; `sudo ss -lntp` en el VPS debe mostrar `:443`. |
 | Cloudflare 525 | Certificado de origen mal montado o modo no `Full (strict)`; revisar `docker compose ... logs caddy`. |
 | 502 desde Caddy | `app` no está `healthy`; logs `app` (migración fallida, MySQL sin arrancar). |
+| 403 o conexión cortada al probar la IP del VPS directamente | Esperado: Caddy sólo acepta tráfico de los rangos de Cloudflare (`deploy/cloudflare-ips.caddy`). Prueba siempre por el dominio proxied. |
 | `SQLSTATE[HY000] [1045]` | `DB_PASSWORD` ≠ `MYSQL_PASSWORD` en `.env.prod` (MySQL sólo crea el usuario en el primer arranque del volumen). |
 | Sesión que caduca al navegar | `APP_KEY` cambió entre despliegues o `SESSION_SECURE_COOKIE=true` con tráfico HTTP directo al origen. |
 | Imágenes subidas no aparecen | Permisos de `public/img`; el contenedor corre como `www-data` y escribe en el bind-mount. |
