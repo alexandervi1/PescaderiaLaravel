@@ -46,14 +46,17 @@ class DatabaseSeeder extends Seeder
 
         // ── 5. Usuario Admin ──
         // En producción se define desde el entorno para no arrancar con credenciales conocidas.
+        $admin = $this->credencialesAdmin();
+
         Usuario::create([
-            'nombre_usuario'  => env('INITIAL_ADMIN_USER', 'admin123'),
-            'nombre_completo' => 'Maritza Rosero',
-            'password'        => Hash::make(env('INITIAL_ADMIN_PASSWORD', 'admin123')),
-            'rol_id'          => 1,
-            'direccion'       => 'Av. Canónigo Ramos y 11 de Noviembre',
-            'correo'          => env('INITIAL_ADMIN_EMAIL', 'maritza@gmail.com'),
-            'telefono'        => '0992470053',
+            'nombre_usuario'      => $admin['usuario'],
+            'nombre_completo'     => 'Maritza Rosero',
+            'password'            => Hash::make($admin['password']),
+            'rol_id'              => 1,
+            'direccion'           => 'Av. Canónigo Ramos y 11 de Noviembre',
+            'correo'              => $admin['correo'],
+            'telefono'            => '0992470053',
+            'password_changed_at' => $admin['password_changed_at'],
         ]);
 
         // ── 6. Productos ──
@@ -81,5 +84,53 @@ class DatabaseSeeder extends Seeder
         foreach ($productos as $p) {
             Producto::create($p);
         }
+    }
+
+    /**
+     * Credenciales del administrador inicial, validadas cuando el entorno es producción.
+     *
+     * @return array{usuario: string, password: string, correo: string, password_changed_at: ?\Illuminate\Support\Carbon}
+     */
+    private function credencialesAdmin(): array
+    {
+        $usuario = trim((string) env('INITIAL_ADMIN_USER', ''));
+        $password = trim((string) env('INITIAL_ADMIN_PASSWORD', ''));
+        $correo = trim((string) env('INITIAL_ADMIN_EMAIL', ''));
+
+        if (app()->environment('production')) {
+            if ($usuario === '' || $password === '' || $correo === '') {
+                throw new \RuntimeException(
+                    'Faltan credenciales del administrador inicial: define INITIAL_ADMIN_USER, '.
+                    'INITIAL_ADMIN_PASSWORD e INITIAL_ADMIN_EMAIL antes de sembrar en producción.'
+                );
+            }
+
+            if (strlen($password) < 12 || $password === 'admin123') {
+                throw new \RuntimeException(
+                    'La contraseña del administrador inicial debe tener al menos 12 caracteres '.
+                    'y no puede ser la contraseña de ejemplo.'
+                );
+            }
+
+            if (! filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                throw new \RuntimeException(
+                    'INITIAL_ADMIN_EMAIL no contiene un correo electrónico válido.'
+                );
+            }
+
+            return [
+                'usuario'             => $usuario,
+                'password'            => $password,
+                'correo'              => $correo,
+                'password_changed_at' => now(),
+            ];
+        }
+
+        return [
+            'usuario'             => $usuario !== '' ? $usuario : 'admin123',
+            'password'            => $password !== '' ? $password : 'admin123',
+            'correo'              => $correo !== '' ? $correo : 'maritza@gmail.com',
+            'password_changed_at' => null,
+        ];
     }
 }
