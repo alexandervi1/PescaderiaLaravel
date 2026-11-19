@@ -20,6 +20,11 @@
 - [x] F4.3 — b777cf5 — `deploy/restore.sh` con confirmación por `/dev/tty`; `backup.sh` valida `gzip -t` y tamaño > 1 KB — pruebas: 81 passed
 - [x] F4.4 — 2db995e — `BACKUP_REMOTE` con `rclone copy --max-age 25h` y guía de Oracle Object Storage — pruebas: 81 passed
 - [x] F4.5 — 2dd8427 — cron de `schedule:run` documentado. **Limpieza de carritos NO implementada**: `carrito` no tiene `updated_at` (sólo `fecha_agregado`), y el plan prohíbe inventarla — pruebas: 81 passed
+- [x] F5.1 — bc05c8e — workflow con jobs `pruebas`, `auditoria`, `docker` y `shell`; shellcheck limpio (SC2016 intencional suprimido) — pruebas: 81 passed. `docker build` y la ejecución real de GitHub Actions no se pudieron verificar aquí (daemon ausente).
+- [x] F5.2 — 1b1f4a7 — Larastan ^2.0 (v2.11.2), `phpstan.neon` nivel 5 sobre `app/`, línea base y `config.platform.php=8.2.2`; paso añadido al job `pruebas` — pruebas: 81 passed
+- [x] F6.1 — 395bd68 — todos los `index()` del panel usan DataTables (se dejan como estaban); pedidos acotado a 90 días por defecto con selector y `?desde=` — pruebas: 82 passed
+- [x] F6.2 — d00ca72 — migración nueva: `pedido(usuario_id, fecha_pedido)`, `pedido(estado)`, `producto(categoria_id)`; `carrito(usuario_id)` omitido porque el unique existente ya lo cubre — pruebas: 82 passed
+- [x] F6.3 — 930a4f2 — `Model::preventLazyLoading` fuera de producción, N+1 corregidos en reportes y carrito, `event:cache` en el entrypoint — pruebas: 82 passed
 
 ## MEJORA FUTURA — CSP en modo Report-Only
 
