@@ -102,6 +102,20 @@ Pide escribir `RESTAURAR` por `/dev/tty`, detiene `app`, carga el dump con `mysq
 
 Simulacro mensual recomendado: el primer lunes de cada mes restaura el último respaldo en una copia descartable del VPS (o en local con `docker compose`), comprueba que el panel lista pedidos y productos, y anota el resultado. Un respaldo que nunca se ha restaurado no cuenta como respaldo.
 
+### Copia fuera del servidor
+
+Los respaldos viven en `/var/backups/pescaderia`, en el mismo VPS: si el disco o la instancia se pierden, se pierden con ella. Define `BACKUP_REMOTE` en el entorno del cron para que `backup.sh` copie lo reciente con `rclone`:
+
+```bash
+# Una sola vez, como el usuario del cron:
+rclone config          # crea un remoto, p. ej. "oracle:pescaderia-backups"
+
+# En la línea del cron:
+15 3 * * * cd /opt/pescaderia && BACKUP_REMOTE="oracle:pescaderia-backups" ./deploy/backup.sh >> /var/log/pescaderia-backup.log 2>&1
+```
+
+`rclone copy "$DEST" "$BACKUP_REMOTE" --max-age 25h` sube sólo lo de las últimas 25 horas. Con Oracle Object Storage, configura el remoto de tipo `s3` con el endpoint de la región y las claves del bucket; alternativamente usa `rclone` contra cualquier destino S3-compatible. Si `rclone` no está instalado, el respaldo local sigue generándose y el script avisa por stderr.
+
 ## 7. Problemas típicos
 
 | Síntoma | Causa / arreglo |

@@ -34,4 +34,13 @@ tar -czf "$UPLOADS_FILE" public/img/productos public/img/negocio 2>/dev/null \
 
 find "$DEST" -type f -mtime "+$KEEP_DAYS" -delete
 
+if [ -n "${BACKUP_REMOTE:-}" ]; then
+    if command -v rclone >/dev/null 2>&1; then
+        echo "==> copia remota en $BACKUP_REMOTE"
+        rclone copy "$DEST" "$BACKUP_REMOTE" --max-age 25h
+    else
+        echo "aviso: BACKUP_REMOTE está definido pero rclone no está instalado; se omite la copia remota" >&2
+    fi
+fi
+
 echo "OK $DUMP_FILE $UPLOADS_FILE"
