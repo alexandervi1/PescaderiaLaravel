@@ -12,13 +12,26 @@ KEEP_DAYS="${BACKUP_KEEP_DAYS:-14}"
 
 mkdir -p "$DEST"
 
+DUMP_FILE="$DEST/pescaderia-$STAMP.sql.gz"
+UPLOADS_FILE="$DEST/uploads-$STAMP.tar.gz"
+
 "${COMPOSE[@]}" exec -T db sh -c \
     'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump --single-transaction --quick --no-tablespaces -u root "$MYSQL_DATABASE"' \
-    | gzip > "$DEST/pescaderia-$STAMP.sql.gz"
+    | gzip > "$DUMP_FILE"
 
-tar -czf "$DEST/uploads-$STAMP.tar.gz" public/img/productos public/img/negocio 2>/dev/null \
-    || tar -czf "$DEST/uploads-$STAMP.tar.gz" public/img
+if ! gzip -t "$DUMP_FILE" 2>/dev/null; then
+    echo "error: el respaldo $DUMP_FILE está corrupto" >&2
+    exit 1
+fi
+
+if [ "$(wc -c < "$DUMP_FILE")" -le 1024 ]; then
+    echo "error: el respaldo $DUMP_FILE pesa menos de 1 KB; no se considera válido" >&2
+    exit 1
+fi
+
+tar -czf "$UPLOADS_FILE" public/img/productos public/img/negocio 2>/dev/null \
+    || tar -czf "$UPLOADS_FILE" public/img
 
 find "$DEST" -type f -mtime "+$KEEP_DAYS" -delete
 
-echo "OK $DEST/pescaderia-$STAMP.sql.gz $DEST/uploads-$STAMP.tar.gz"
+echo "OK $DUMP_FILE $UPLOADS_FILE"

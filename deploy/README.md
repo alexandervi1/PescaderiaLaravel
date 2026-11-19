@@ -10,7 +10,7 @@ Supuesto: el repositorio ya está clonado en `/opt/pescaderia` y el usuario tien
 1. `cd /opt/pescaderia && git pull --ff-only`
 2. Verificar `deploy/.env.prod` (si no existe: `cp deploy/.env.prod.example deploy/.env.prod` y completar, ver abajo).
 3. Verificar `deploy/certs/origin.pem` y `deploy/certs/origin.key`.
-4. `chmod +x deploy/deploy.sh deploy/backup.sh deploy/update-cloudflare-ips.sh`
+4. `chmod +x deploy/deploy.sh deploy/backup.sh deploy/restore.sh deploy/update-cloudflare-ips.sh`
 5. `./deploy/deploy.sh`
 6. Comprobar: `docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod ps` (los tres servicios `running`, `db` `healthy`).
 7. `curl -sI https://APP_DOMAIN | head -1` debe responder `HTTP/2 200` (o `301` a `/`).
@@ -94,10 +94,13 @@ Genera `mysqldump` comprimido + tar de `public/img/productos` y `public/img/nego
 Restaurar:
 
 ```bash
-gunzip -c /var/backups/pescaderia/pescaderia-XXXXXXXX.sql.gz \
-  | docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod exec -T db \
-      sh -c 'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -u root "$MYSQL_DATABASE"'
+./deploy/restore.sh /var/backups/pescaderia/pescaderia-XXXXXXXX-XXXXXX.sql.gz \
+  [/var/backups/pescaderia/uploads-XXXXXXXX-XXXXXX.tar.gz]
 ```
+
+Pide escribir `RESTAURAR` por `/dev/tty`, detiene `app`, carga el dump con `mysql`, extrae las imágenes si se pasa el tar y vuelve a arrancar `app`. El dump se valida con `gzip -t` al generarlo; el script aborta si el archivo está corrupto.
+
+Simulacro mensual recomendado: el primer lunes de cada mes restaura el último respaldo en una copia descartable del VPS (o en local con `docker compose`), comprueba que el panel lista pedidos y productos, y anota el resultado. Un respaldo que nunca se ha restaurado no cuenta como respaldo.
 
 ## 7. Problemas típicos
 
