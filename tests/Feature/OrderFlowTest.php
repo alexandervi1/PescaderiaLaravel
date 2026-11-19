@@ -180,6 +180,20 @@ class OrderFlowTest extends TestCase
         ]);
     }
 
+    public function test_checkout_no_expone_errores_internos_al_cliente(): void
+    {
+        $this->mock(OrderService::class, function ($mock) {
+            $mock->shouldReceive('processOrder')->once()->andThrow(
+                new \Illuminate\Database\QueryException('select * from usuario', [], new \Exception('boom'))
+            );
+        });
+
+        $response = $this->actingAs($this->cliente)->post(route('pedidos.procesar'));
+
+        $response->assertSessionHas('error', 'No pudimos procesar tu pedido. Inténtalo de nuevo en unos minutos.');
+        $this->assertStringNotContainsString('select', (string) session('error'));
+    }
+
     public function test_order_uses_the_configured_receipt_series(): void
     {
         Configuracion::updateOrCreate(['clave' => 'comprobante_serie'], ['valor' => '002-002']);
