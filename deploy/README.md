@@ -116,7 +116,18 @@ rclone config          # crea un remoto, p. ej. "oracle:pescaderia-backups"
 
 `rclone copy "$DEST" "$BACKUP_REMOTE" --max-age 25h` sube sólo lo de las últimas 25 horas. Con Oracle Object Storage, configura el remoto de tipo `s3` con el endpoint de la región y las claves del bucket; alternativamente usa `rclone` contra cualquier destino S3-compatible. Si `rclone` no está instalado, el respaldo local sigue generándose y el script avisa por stderr.
 
-## 7. Problemas típicos
+## 7. Tareas programadas
+
+El contenedor no ejecuta el scheduler por sí solo. Añade el cron del host:
+
+```bash
+sudo crontab -e
+* * * * * docker compose -f /opt/pescaderia/docker-compose.prod.yml --env-file /opt/pescaderia/deploy/.env.prod exec -T app php artisan schedule:run >/dev/null 2>&1
+```
+
+Hoy `App\Console\Kernel::schedule()` no registra tareas: la tabla `carrito` guarda `fecha_agregado` pero no `updated_at`, así que no hay forma fiable de distinguir un carrito abandonado de uno con actividad reciente sin cambiar el esquema. Cuando se añada `updated_at` (migración nueva), la limpieza de carritos con más de 30 días es un `$schedule->command(...)->daily()`.
+
+## 8. Problemas típicos
 
 | Síntoma | Causa / arreglo |
 |---|---|
