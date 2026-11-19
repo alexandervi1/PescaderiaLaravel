@@ -22,6 +22,8 @@
    - Añadir dependencias de Composer/npm salvo que la subfase lo pida.
    - Commitear `.env`, `deploy/.env.prod`, `deploy/certs/`, `database/database.sqlite` o `.phpunit.result.cache`.
    - Usar `git push --force`, `git reset --hard` o `--no-verify`.
+   - Ejecutar `migrate:fresh`, `migrate:refresh`, `db:wipe` o `db:seed` contra la base local (`database/database.sqlite` o MySQL). Para probar migraciones usa solo `php artisan test` (SQLite en memoria) o un contenedor desechable.
+   - Ejecutar `artisan` como root dentro del contenedor: siempre `docker exec -u www-data ...` (como root deja caché de root y la app responde 500).
 5. **Convenciones del código existente** (respétalas):
    - Nombres de dominio en español (`Pedido`, `Producto`, `descontarStock`, `obtenerIva`).
    - Tablas en singular sin `s`: `usuario`, `producto`, `pedido`, `pedidoproducto`, `carrito`. PK: `<tabla>_id`.
@@ -334,6 +336,60 @@
 
 ### F7.2 — Laravel 10 → 11/12 (planificación)
 - **Acción del agente:** no ejecutar. Redacta en la bitácora la lista de cambios necesarios (estructura simplificada opcional, PHP ≥ 8.2, Sanctum 4, `casts()` como método) para que un humano decida cuándo hacerlo.
+
+---
+
+## F8 — Actualización a una versión con soporte (Laravel 10 → 11 → 12)
+
+> **Por qué:** Laravel 10 dejó de recibir parches de seguridad en febrero de 2025 (F7 no cerró el riesgo; `composer audit` lo sigue reportando). Laravel 12 recibe parches de seguridad hasta principios de 2027. **No saltes versiones:** 10 → 11 y luego 11 → 12, cada una con su puerta de calidad.
+>
+> **Reglas adicionales de F8:**
+> - Rama nueva `mejora/laravel-12` desde `mejora/laravel-10` (o desde `master` si ya se fusionó).
+> - **Mantén la estructura de carpetas de Laravel 10** (`app/Http/Kernel.php`, `app/Console/Kernel.php`, `RouteServiceProvider`, `config/*` completos). Laravel 11 y 12 la siguen soportando; migrar a la estructura simplificada está **fuera de alcance**.
+> - Consulta la guía oficial de actualización de cada versión (`https://laravel.com/docs/11.x/upgrade` y `https://laravel.com/docs/12.x/upgrade`) y aplica solo las secciones de impacto alto y medio que afecten a este proyecto. Anota en la bitácora cada sección revisada y si aplicó o no.
+> - Puerta de cada subfase: `php artisan test` + `vendor/bin/phpstan analyse` + `docker build --target prod .` + arranque en contenedor desechable con `curl /api/salud` → 200 (patrón de la sección "Verificación en contenedor" de abajo).
+
+### F8.1 — PHP 8.2 como mínimo en todas partes
+- Ya lo es en Dockerfile y CI. Cambia `composer.json` → `"php": "^8.2"` y elimina `config.platform.php` (o súbelo a `8.2.x` real del Dockerfile). `composer update --lock`.
+- **Commit:** `build: exige PHP 8.2`
+
+### F8.2 — Laravel 10 → 11
+- Dependencias: `laravel/framework:^11.0`, `laravel/sanctum:^4.0`, `nunomaduro/collision:^8.1`, `phpunit/phpunit:^10.5` (o `^11`), `spatie/laravel-ignition:^2.4`, y sustituye `nunomaduro/larastan` por `larastan/larastan:^2.9`. `composer update -W`.
+- Puntos de la guía que **seguro** tocan este proyecto (verifícalos uno a uno):
+  1. **Sanctum 4:** publica y ejecuta sus migraciones si faltan (`php artisan vendor:publish --tag=sanctum-migrations`) **solo si** la tabla `personal_access_tokens` no existe ya en `database/migrations`.
+  2. **Modificar columnas:** en Laravel 11 `->change()` debe repetir todos los atributos de la columna. Busca `->change()` en `database/migrations`; si una migración **existente** lo usa, no la edites: anótalo en la bitácora (solo afecta a instalaciones nuevas, las pruebas lo detectarán).
+  3. **Precisión de floats / doubles:** revisa columnas `float`/`double` en migraciones.
+  4. **Rate limiting por segundos:** `Limit::perMinute` sigue igual; verifica que las pruebas de throttle (F3.4) pasan.
+  5. **Carbon 3:** `diffInDays()` y similares devuelven `float` y con signo. Revisa `Usuario::passwordVencida()` y cualquier `diffIn*` en `app/` y vistas: usa `(int) abs(...)` o invierte el orden de los operandos para mantener el comportamiento. Añade una prueba unitaria de `passwordVencida()` con 89, 90 y 91 días.
+  6. **`Model::casts()`**: no es obligatorio cambiar `$casts`.
+- **Commit(s):** `build: actualiza a Laravel 11` + un `fix:` por cada rotura.
+
+### F8.3 — Laravel 11 → 12
+- Dependencias: `laravel/framework:^12.0`, `phpunit/phpunit:^11.0`, `nunomaduro/collision:^8.6`, `larastan/larastan:^3.0`. `composer update -W`.
+- Revisa la guía 12.x (cambios menores en su mayoría: UUIDv7 en `HasUuids` —este proyecto no lo usa, confírmalo con `grep -rn HasUuids app/`—, validación `image` que ya no acepta SVG por defecto —coherente con F3.5—, `Carbon 3`).
+- **Commit(s):** `build: actualiza a Laravel 12` + `fix:` por rotura.
+
+### F8.4 — Auditoría limpia
+- `composer audit --no-dev` sin avisos. En `.github/workflows/ci.yml` quita `continue-on-error: true` del job `auditoria`.
+- **Commit:** `ci: la auditoría de dependencias pasa a ser bloqueante`
+
+### Verificación en contenedor (obligatoria al final de F8.2 y F8.3)
+```bash
+docker build -q --target prod -t pescaderia:verif .
+docker network create verif-net
+docker run -d --name verif-db --network verif-net -e MYSQL_DATABASE=pescaderia -e MYSQL_USER=pescaderia -e MYSQL_PASSWORD=verifpass -e MYSQL_ROOT_PASSWORD=verifroot mysql:8.4
+docker run -d --name verif-app --network verif-net -p 8099:80 -e APP_ENV=production -e APP_DEBUG=false \
+  -e APP_KEY="base64:$(head -c 32 /dev/urandom | base64)" -e LOG_CHANNEL=stderr -e DB_HOST=verif-db \
+  -e DB_DATABASE=pescaderia -e DB_USERNAME=pescaderia -e DB_PASSWORD=verifpass -e SEED_DEMO=true \
+  -e INITIAL_ADMIN_USER=adminverif -e INITIAL_ADMIN_PASSWORD='ClaveVerif2026!' -e INITIAL_ADMIN_EMAIL=admin@ejemplo.com pescaderia:verif
+# esperar hasta 3 min y comprobar:
+curl -s http://localhost:8099/api/salud            # {"estado":"ok"}
+for p in / /login /productos/1; do curl -s -o /dev/null -w "$p %{http_code}\n" http://localhost:8099$p; done   # 200
+docker logs verif-app 2>&1 | grep -c production.ERROR   # 0
+# limpieza (solo estos recursos, nunca prune):
+docker rm -f verif-app verif-db && docker network rm verif-net && docker image rm pescaderia:verif
+```
+Además, con sesión real (curl con cookie jar): login de admin → `/admin` 200; registro de cliente → agregar al carrito → checkout → el stock baja; cancelar desde admin → el stock vuelve.
 
 ---
 
