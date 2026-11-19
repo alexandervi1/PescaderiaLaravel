@@ -62,4 +62,20 @@ Sin decisión del negocio no se implementa ninguna de las dos.
 - Diferido (menor): Caddy no reescribe `X-Forwarded-Host`/`X-Forwarded-Port`; un cliente podría influir en `$request->getHost()`. Arreglo sugerido: `header_up X-Forwarded-Host {http.request.host}` y `header_up X-Forwarded-Port {http.request.port}`.
 - Diferido (menor): el workflow de CI sólo dispara en `push` a `master`; añadir el patrón de ramas de trabajo a `push.branches` si se quiere CI en cada push.
 
+## Revisión posterior (Claude) — fusionada en el PR #1
+
+- `5b44f5d` Contadores del listado de pedidos con el mismo rango de fechas que la lista.
+- `c83cb7b` Caddy fija `X-Forwarded-Port 443`. (`X-Forwarded-Host` no era problema: Caddy la reescribe y el sitio solo atiende `APP_DOMAIN`.)
+- `51605c0` CI también en `mejora/**`.
+- `5aaa51e` **Error grave encontrado al probar en Docker:** el entrypoint corría `migrate`/`db:seed` como root tras el `chown`; la caché quedaba de root y Apache respondía 500 en todas las páginas. Se devuelve la propiedad a `www-data` al final del entrypoint.
+- `b9516c9` MySQL 8.0 → 8.4 LTS (8.0 sin soporte desde abril de 2026).
+
+## F8 — Laravel 10 → 12 (rama `mejora/laravel-12`)
+
+- [x] F8.1 + F8.3 — `498bd1f` — Laravel 12.73.0, Sanctum 4.3, Collision 8, PHPUnit 11.5, `larastan/larastan` 3; `"php": "^8.2"`. `composer audit`: sin avisos. **Desvío:** F8.2 (Laravel 11) no se ejecutó como paso separado porque Composer bloquea todas las versiones 11.x por avisos sin parche; se aplicaron los puntos de las guías 11.x y 12.x directamente. Revisión de las guías: `->change()` no se usa en migraciones; no hay columnas `float`/`double`; no se usa `HasUuids`; Sanctum no tiene migración propia (no se usan tokens); el único `diffInDays` (`Usuario::passwordVencida`) mantiene el comportamiento con Carbon 3. Con Laravel 12 SQLite aplica las FK dentro de las pruebas: `OrderStatusTest` usa `PRAGMA defer_foreign_keys`. — pruebas: 83 passed
+- [x] F8.2b — `a572aee` — Larastan 3 exige tipos de retorno en relaciones: 18 relaciones tipadas, `Authenticate::redirectTo` con retorno explícito, `str_pad` con string. Línea base de 29 → 3 entradas (dos falsos positivos de `QueryException` y un PHPDoc sin efecto). — pruebas: 83 passed
+- [x] F8.2c — `d72ff42` — pruebas de `passwordVencida()` en 89, 89.5, 90 y 91 días — pruebas: 88 passed
+- [x] F8.4 — `4860e28` — auditoría de dependencias bloqueante en la CI.
+- Verificación en contenedor (imagen `prod` + MySQL 8.4.13): `/api/salud` 200; 6 páginas públicas, 12 pantallas del admin y 3 de cliente responden 200; registro, login, carrito, checkout (stock 500 → 497, comprobante `001-001-000000001`), cancelación (stock vuelve a 500), reactivación rechazada; `www-data` escribe en `storage` y `public/img`; 0 errores en el log.
+
 

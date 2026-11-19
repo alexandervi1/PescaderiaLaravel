@@ -15,7 +15,7 @@ class ConfiguracionLog extends Model
         'created_at' => 'datetime',
     ];
 
-    public function usuario()
+    public function usuario(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'usuario_id', 'usuario_id');
     }

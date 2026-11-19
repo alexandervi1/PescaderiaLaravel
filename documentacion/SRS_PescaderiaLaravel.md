@@ -16,7 +16,7 @@
 
 ### 1.1. Propósito
 
-El propósito de este documento es definir la Especificación de Requisitos de Software (SRS) para el sistema de e-commerce y gestión de la "Comercial de Mariscos Don Walter", desarrollado bajo el framework Laravel 9. Este documento detalla tanto las funcionalidades del frontend (tienda orientada al cliente) como del backend (panel CRM de administración).
+El propósito de este documento es definir la Especificación de Requisitos de Software (SRS) para el sistema de e-commerce y gestión de la "Comercial de Mariscos Don Walter", desarrollado bajo el framework Laravel 12. Este documento detalla tanto las funcionalidades del frontend (tienda orientada al cliente) como del backend (panel CRM de administración).
 
 ### 1.2. Ámbito del Sistema
 
@@ -35,7 +35,7 @@ El software es una plataforma integral de comercio electrónico para pescado y m
 ### 1.4. Referencias
 
 - IEEE Std 830-1998, *IEEE Recommended Practice for Software Requirements Specifications*.
-- Documentación oficial de Laravel 9.0 — <https://laravel.com/docs/9.x>.
+- Documentación oficial de Laravel 12 — <https://laravel.com/docs/12.x>.
 
 ### 1.5. Visión General del Documento
 
@@ -71,7 +71,7 @@ Existen 2 perfiles principales interactuando con la aplicación:
 ### 2.4. Entorno Operativo
 
 - Servidor web: mínimo Apache 2.4 o Nginx.
-- Lenguaje base: PHP 8.0+.
+- Lenguaje base: PHP 8.2+.
 - Base de datos: MySQL 5.7+ o MariaDB.
 - Frameworks UI: Bootstrap 5.3, DataTables.
 

@@ -18,12 +18,12 @@ class PedidoProducto extends Pivot
         'subtotal' => 'decimal:2',
     ];
 
-    public function pedido()
+    public function pedido(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Pedido::class, 'pedido_id', 'pedido_id');
     }
 
-    public function producto()
+    public function producto(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id', 'producto_id');
     }

@@ -1,11 +1,11 @@
 # 🐟 Pescadería Don Walter — Plataforma E-commerce y Gestión
 
-![Laravel](https://img.shields.io/badge/Laravel-10.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 
-Plataforma integral en **Laravel 10** para la venta y gestión de productos del mar. Tiene una fachada pública para clientes y un panel de administración que controla catálogo, inventario, pedidos, clientes y configuración del negocio.
+Plataforma integral en **Laravel 12** para la venta y gestión de productos del mar. Tiene una fachada pública para clientes y un panel de administración que controla catálogo, inventario, pedidos, clientes y configuración del negocio.
 
 ---
 
@@ -37,7 +37,7 @@ Plataforma integral en **Laravel 10** para la venta y gestión de productos del 
 
 ## 🛠️ Stack Tecnológico
 
-* **Backend:** PHP 8.1+, Laravel 10
+* **Backend:** PHP 8.2+, Laravel 12
 * **Frontend:** Blade, Bootstrap 5.3, CSS propio con tokens de diseño
 * **Base de datos:** MySQL (SQLite para desarrollo local y pruebas)
 * **Librerías:** Chart.js, DataTables, FontAwesome (vía CDN)
@@ -46,7 +46,7 @@ Plataforma integral en **Laravel 10** para la venta y gestión de productos del 
 
 ## 🚀 Requisitos e Instalación
 
-Necesitas **PHP >= 8.0**, **Composer** y **MySQL** (o Laragon / XAMPP).
+Necesitas **PHP >= 8.2**, **Composer** y **MySQL** (o Laragon / XAMPP).
 
 **1. Clonar el repositorio**
 ```bash
@@ -82,7 +82,7 @@ Disponible en `http://localhost:8000`.
 
 ## 🐳 Docker
 
-Sin PHP, Composer ni MySQL instalados: un servicio Apache/PHP 8.2 (`app`) y un MySQL 8 (`db`).
+Sin PHP, Composer ni MySQL instalados: un servicio Apache/PHP 8.2 (`app`) y un MySQL 8.4 (`db`).
 
 ```bash
 docker compose up --build

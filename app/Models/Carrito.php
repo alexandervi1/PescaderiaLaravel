@@ -12,12 +12,14 @@ class Carrito extends Model
 
     protected $fillable = ['usuario_id', 'producto_id', 'cantidad'];
 
-    public function usuario()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Usuario, $this> */
+    public function usuario(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'usuario_id', 'usuario_id');
     }
 
-    public function producto()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Producto, $this> */
+    public function producto(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Producto::class, 'producto_id', 'producto_id');
     }
