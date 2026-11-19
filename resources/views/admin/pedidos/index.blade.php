@@ -10,15 +10,25 @@
     </div>
     <div class="card-body p-4">
         <div class="d-flex flex-wrap gap-2 mb-3">
-            <a href="{{ route('admin.pedidos.index') }}" class="btn btn-sm rounded-pill {{ $estado ? 'btn-outline-secondary' : 'btn-primary' }}">
+            <a href="{{ route('admin.pedidos.index', ['desde' => $desde->toDateString()]) }}" class="btn btn-sm rounded-pill {{ $estado ? 'btn-outline-secondary' : 'btn-primary' }}">
                 Todos ({{ $conteos->sum() }})
             </a>
             @foreach($estados as $opcion)
-                <a href="{{ route('admin.pedidos.index', ['estado' => $opcion]) }}" class="btn btn-sm rounded-pill {{ $estado === $opcion ? 'btn-primary' : 'btn-outline-secondary' }}">
+                <a href="{{ route('admin.pedidos.index', ['estado' => $opcion, 'desde' => $desde->toDateString()]) }}" class="btn btn-sm rounded-pill {{ $estado === $opcion ? 'btn-primary' : 'btn-outline-secondary' }}">
                     {{ $opcion }} ({{ $conteos[$opcion] ?? 0 }})
                 </a>
             @endforeach
         </div>
+        <form method="GET" action="{{ route('admin.pedidos.index') }}" class="d-flex flex-wrap align-items-end gap-2 mb-3">
+            @if($estado)
+                <input type="hidden" name="estado" value="{{ $estado }}">
+            @endif
+            <div>
+                <label for="desde" class="form-label small text-muted mb-1">Pedidos desde</label>
+                <input type="date" id="desde" name="desde" class="form-control form-control-sm" value="{{ $desde->toDateString() }}">
+            </div>
+            <button type="submit" class="btn btn-sm btn-outline-primary rounded-pill">Filtrar</button>
+        </form>
         <div class="table-responsive">
             <table class="table table-hover align-middle datatable">
                 <thead class="table-light">

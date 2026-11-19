@@ -283,6 +283,40 @@ class AdminFixesTest extends TestCase
         $this->assertSame('Entregado', $pedidos->first()->estado);
     }
 
+    public function test_pedidos_se_acotan_a_los_ultimos_90_dias_por_defecto(): void
+    {
+        $antiguo = Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'fecha_pedido' => now()->subDays(120),
+            'subtotal' => 10,
+            'iva' => 1.5,
+            'total' => 11.5,
+            'estado' => 'Pendiente',
+        ]);
+
+        $reciente = Pedido::create([
+            'usuario_id' => $this->cliente->usuario_id,
+            'fecha_pedido' => now()->subDays(1),
+            'subtotal' => 10,
+            'iva' => 1.5,
+            'total' => 11.5,
+            'estado' => 'Pendiente',
+        ]);
+
+        $porDefecto = $this->actingAs($this->admin)->get(route('admin.pedidos.index'));
+        $porDefecto->assertOk();
+        $this->assertSame([$reciente->pedido_id], $porDefecto->viewData('pedidos')->pluck('pedido_id')->all());
+
+        $ampliado = $this->actingAs($this->admin)->get(route('admin.pedidos.index', [
+            'desde' => now()->subDays(180)->toDateString(),
+        ]));
+        $ampliado->assertOk();
+        $this->assertEqualsCanonicalizing(
+            [$antiguo->pedido_id, $reciente->pedido_id],
+            $ampliado->viewData('pedidos')->pluck('pedido_id')->all()
+        );
+    }
+
     public function test_invalid_order_status_filter_falls_back_to_all(): void
     {
         Pedido::create([

@@ -16,8 +16,19 @@ class PedidoController extends Controller
         $estado = $request->query('estado');
         $estado = in_array($estado, $estados, true) ? $estado : null;
 
+        $desde = null;
+        if ($request->filled('desde')) {
+            try {
+                $desde = \Carbon\Carbon::parse((string) $request->query('desde'))->startOfDay();
+            } catch (\Exception $e) {
+                $desde = null;
+            }
+        }
+        $desde = $desde ?? now()->subDays(90)->startOfDay();
+
         $pedidos = Pedido::with('usuario')
                     ->when($estado, fn ($query) => $query->where('estado', $estado))
+                    ->where('fecha_pedido', '>=', $desde)
                     ->orderBy('fecha_pedido', 'desc')
                     ->get();
 
@@ -25,7 +36,7 @@ class PedidoController extends Controller
                     ->groupBy('estado')
                     ->pluck('pedidos', 'estado');
 
-        return view('admin.pedidos.index', compact('pedidos', 'estado', 'estados', 'conteos'));
+        return view('admin.pedidos.index', compact('pedidos', 'estado', 'estados', 'conteos', 'desde'));
     }
 
     public function show($id)
