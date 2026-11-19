@@ -65,7 +65,7 @@ Rellenar como mínimo: `APP_DOMAIN`, `APP_URL` (`https://` + dominio), `APP_KEY`
 
 ```bash
 docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod logs --tail=60 app
-docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod exec app php artisan about
+docker compose -f docker-compose.prod.yml --env-file deploy/.env.prod exec -u www-data app php artisan about
 ```
 
 - Home pública responde y muestra catálogo.
@@ -122,7 +122,7 @@ El contenedor no ejecuta el scheduler por sí solo. Añade el cron del host:
 
 ```bash
 sudo crontab -e
-* * * * * docker compose -f /opt/pescaderia/docker-compose.prod.yml --env-file /opt/pescaderia/deploy/.env.prod exec -T app php artisan schedule:run >/dev/null 2>&1
+* * * * * docker compose -f /opt/pescaderia/docker-compose.prod.yml --env-file /opt/pescaderia/deploy/.env.prod exec -T -u www-data app php artisan schedule:run >/dev/null 2>&1
 ```
 
 Hoy `App\Console\Kernel::schedule()` no registra tareas: la tabla `carrito` guarda `fecha_agregado` pero no `updated_at`, así que no hay forma fiable de distinguir un carrito abandonado de uno con actividad reciente sin cambiar el esquema. Cuando se añada `updated_at` (migración nueva), la limpieza de carritos con más de 30 días es un `$schedule->command(...)->daily()`.

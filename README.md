@@ -94,7 +94,7 @@ Disponible en `http://localhost:8080`. En el primer arranque el contenedor esper
 * **Credenciales MySQL:** `MYSQL_DATABASE`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD` (por defecto `pescaderia` / `pescaderia` / `secret` / `root`). MySQL no se publica en el host; conéctate con `docker compose exec db mysql -upescaderia -psecret pescaderia`.
 * **`APP_KEY`:** se toma de `.env`; si falta, el contenedor genera una efímera y lo avisa.
 * **Datos persistentes:** volumen `dbdata` para MySQL, y `./public/img` + `./storage` montados desde el repositorio, de modo que las subidas del panel y los logs sobreviven al contenedor.
-* **Sembrar de nuevo / borrar datos:** `docker compose exec app php artisan migrate:fresh --seed` o `docker compose down -v` (elimina el volumen de MySQL).
+* **Sembrar de nuevo / borrar datos:** `docker compose exec -u www-data app php artisan migrate:fresh --seed` o `docker compose down -v` (elimina el volumen de MySQL).
 * **Catálogo de ejemplo:** `SEED_DEMO` (por defecto `true`). Con `SEED_DEMO=false` el sembrado crea sólo roles, configuración, unidades y categorías; en producción está desactivado salvo que lo actives.
 
 El `database.sqlite` local no se usa dentro de Docker: el contenedor habla con MySQL.

@@ -63,4 +63,8 @@ if [ "${SEED_ON_START:-true}" = "true" ]; then
     fi
 fi
 
+# Los comandos artisan de arriba corren como root y pueden dejar archivos de caché
+# o logs propiedad de root; Apache (www-data) fallaría al sobrescribirlos.
+chown -R www-data:www-data storage bootstrap/cache public/img 2>/dev/null || true
+
 exec "$@"
