@@ -71,6 +71,21 @@ parameters:
 			path: app/Http/Controllers/Admin/ReporteController.php
 
 		-
+			message: "#^Relation 'categoria' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ReporteController.php
+
+		-
+			message: "#^Relation 'unidadCompra' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 1
+			path: app/Http/Controllers/Admin/ReporteController.php
+
+		-
+			message: "#^Relation 'unidadVenta' is not found in App\\\\Models\\\\Producto model\\.$#"
+			count: 2
+			path: app/Http/Controllers/Admin/ReporteController.php
+
+		-
 			message: "#^Relation 'usuario' is not found in App\\\\Models\\\\Pedido model\\.$#"
 			count: 1
 			path: app/Http/Controllers/Admin/ReporteController.php

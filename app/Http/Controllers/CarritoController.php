@@ -11,7 +11,7 @@ class CarritoController extends Controller
 {
     public function index(PricingService $pricing)
     {
-        $items = Carrito::with('producto.unidadVenta')
+        $items = Carrito::with('producto.categoria', 'producto.unidadVenta')
             ->where('usuario_id', auth()->id())
             ->get();
 

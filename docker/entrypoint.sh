@@ -43,6 +43,7 @@ if [ "${APP_ENV:-local}" = "production" ]; then
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
+    php artisan event:cache
 fi
 
 php artisan migrate --force
