@@ -1,0 +1,3 @@
+# Bitácora de ejecución
+
+- [x] F0.1 — b3fda22 — commit del trabajo Docker pendiente (rama `mejora/produccion`) — pruebas: 50 passed
