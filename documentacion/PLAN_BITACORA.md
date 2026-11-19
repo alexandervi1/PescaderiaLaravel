@@ -15,6 +15,11 @@
 - [x] F3.4 — 73a3475 — limitadores `login-ip` (20/min) y `registro` (10/hora) aplicados a `POST /login` y `POST /registro` — pruebas: 75 passed
 - [x] F3.5 — 19832a9 — imágenes de producto y logo: jpg/jpeg/png/webp, máximo 4000×4000, nombre UUID — pruebas: 78 passed. Las pruebas usan PNG generados sin `ext-gd` porque el PHP local no la trae.
 - [x] F3.6 — ced3788 — auditoría de middleware en `Route::getRoutes()` y aislamiento de `/mis-pedidos/{id}` entre clientes — pruebas: 81 passed
+- [x] F4.1 — 21e971c — `mem_limit` 512m/1g/128m, logs json-file 10m×5 y `no-new-privileges`; `docker compose config` válido — pruebas: 81 passed
+- [x] F4.2 — 8dadf31 — `deploy.sh` ejecuta `backup.sh` si `db` está corriendo y aborta si falla — pruebas: 81 passed
+- [x] F4.3 — b777cf5 — `deploy/restore.sh` con confirmación por `/dev/tty`; `backup.sh` valida `gzip -t` y tamaño > 1 KB — pruebas: 81 passed
+- [x] F4.4 — 2db995e — `BACKUP_REMOTE` con `rclone copy --max-age 25h` y guía de Oracle Object Storage — pruebas: 81 passed
+- [x] F4.5 — 2dd8427 — cron de `schedule:run` documentado. **Limpieza de carritos NO implementada**: `carrito` no tiene `updated_at` (sólo `fecha_agregado`), y el plan prohíbe inventarla — pruebas: 81 passed
 
 ## MEJORA FUTURA — CSP en modo Report-Only
 
